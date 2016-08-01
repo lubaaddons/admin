@@ -1,0 +1,19 @@
+{
+    "name": "lubaaddons/admin",
+    "description": "Admin Backend for Luba",
+    "version": "0.1",
+    "authors": [
+        {
+            "name": "Flo Stone"
+        }
+    ],
+    "require": {
+        "phpoffice/phpexcel": "1.8.*"
+    },
+    "autoload": {
+        "psr-4": {
+            "Luba\\": "src/"
+        }
+    }
+}
+
