@@ -1,0 +1,47 @@
+<!doctype html>
+
+<html>
+
+	<head>
+
+
+
+	</head>
+
+	<body>
+
+		<header>
+
+			<nav>
+
+				<ul>
+
+					<li>
+						<a href="<< url('/') >>">Home</a>
+					</li>
+
+					<foreach $nav as $name => $url>
+
+						<if $tablename == strtolower($name)>
+						<li class="active">
+						<else>
+						<li>
+						</if>
+							<a href="$$url">$$name</a>
+						</li>
+
+					</foreach>
+
+				</ul>
+
+			</nav>
+
+		</header>
+
+		<main>
+
+		</main>
+
+	</body>
+
+</html>
