@@ -39,7 +39,7 @@
 		</header>
 
 		<main>
-			<a href="#" class="add">Add</a>
+			<a href="<< url('admin/'.$tablename.'/create') >>" class="add">Add</a>
 			<table>
 				<thead>
 					<tr>
@@ -87,7 +87,11 @@
 		});
 		$('.overlay').click(function(){
 			hideoverlay();
-		})
+		});
+		$('.add').click(function(e){
+			e.preventDefault();
+			ajaxRequest($(this).attr('href'));
+		});
 
 		function ajaxRequest(url)
 		{

@@ -86,9 +86,6 @@ class AdminBackend
 
 		$form = $this->itemform($merged);
 
-		if (!$form->validate())
-			Redirect::to(url("admin/{$this->table}/edit/$this->id"));
-
 		SQL::table($this->table)->update($id, Input::except('_token', 'save'));
 
 		Redirect::to(url("admin/{$this->table}"));
@@ -113,7 +110,49 @@ class AdminBackend
 
 	public function create()
 	{
-		
+		$tableconf = $this->getTableConfig();
+
+		if (!isset($tableconf['editable']))
+			throw new AdminException('No editable fields are defined!');
+
+		$editfields = $tableconf['editable'];
+		$types = [];
+
+		foreach ($editfields as $column)
+		{
+			$types[] = TypeToInput::make(SQL::table($this->table)->getColumnType($column));
+		}
+
+		$merged = array_combine($editfields, $types);
+
+		$form = $this->itemform($merged);
+		$form->action(url("admin/{$this->table}/store"));
+
+		return new View('edit', ['editfields' => $merged, 'form' => $form], __DIR__.'/views/');
+	}
+
+	public function store()
+	{
+		$tableconf = $this->getTableConfig();
+
+		if (!isset($tableconf['editable']))
+			throw new AdminException('No editable fields are defined!');
+
+		$editfields = $tableconf['editable'];
+		$types = [];
+
+		foreach ($editfields as $column)
+		{
+			$types[] = TypeToInput::make(SQL::table($this->table)->getColumnType($column));
+		}
+
+		$merged = array_combine($editfields, $types);
+
+		$form = $this->itemform($merged);
+
+		SQL::table($this->table)->insert(Input::except('_token', 'save'));
+
+		Redirect::to(url("admin/{$this->table}"));
 	}
 
 	public function delete($id)
@@ -129,11 +168,6 @@ class AdminBackend
 		SQL::table($this->table)->where('id', $id)->delete();
 
 		Redirect::to(url("admin/{$this->table}"));
-	}	
-
-	public function store()
-	{
-		
 	}
 
 	public function actionIsAllowed()
