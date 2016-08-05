@@ -15,6 +15,7 @@ class AdminBackend
 			$config = AdminConfig::make($config);
 
 		$this->config = $config;
+		$this->config->authenticate();
 	}
 
 	public function index()

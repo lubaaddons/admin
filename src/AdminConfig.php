@@ -113,4 +113,16 @@ class AdminConfig
 	{
 		return $this->dashboard;
 	}
+
+	public function authenticate()
+	{
+		if (!$this->auth)
+			return true;
+		
+		$auth = $this->auth;
+		if ($auth())
+			return true;
+		else
+			throw new AdminException('Access Denied', 403);
+	}
 }
