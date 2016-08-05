@@ -17,6 +17,25 @@ class AdminBackend
 		$this->config = $config;
 	}
 
+	public function index()
+	{
+		if ($this->config->dashboard() === false)
+			throw new AdminException('Dashboard has been disabled!');
+
+		$tables = [];
+
+		foreach ($this->config->tables() as $name => $config)
+		{
+			$items = $this->getItems($config, $name, function($query){
+				$query->orderBy('created_at', 'desc');
+				$query->limit(7);
+			});
+			$tables[] = ['name' => $name, 'config' => $config, 'items' => $items];
+		}
+
+		return new View('dashboard', ['nav' => $this->config->getNav(), 'tables' => $tables], __DIR__.'/views/');
+	}
+
 	public function edit($id)
 	{
 		
@@ -68,7 +87,7 @@ class AdminBackend
 			throw new AdminException("Action \"$func\" has not been configured!");
 	}
 
-	private function getItems(array $tableconf, $tablename)
+	private function getItems(array $tableconf, $tablename, callable $otherfilter = NULL)
 	{
 		$select = [];
 
@@ -94,6 +113,9 @@ class AdminBackend
 			$filter = $tableconf['filter'];
 			$filter($items);
 		}
+
+		if ($otherfilter)
+			$otherfilter($items);
 
 		$items = $items->get();
 

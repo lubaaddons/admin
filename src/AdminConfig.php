@@ -23,6 +23,8 @@ class AdminConfig
 
 	protected $filters;
 
+	protected $dashboard = true;
+
 	public function __construct($config = [])
 	{
 		$this->set(static::$global_config);
@@ -94,6 +96,9 @@ class AdminConfig
 	{
 		$nav = [];
 
+		if  ($this->dashboard)
+			$nav['Dashboard'] = url('admin');
+
 		foreach ($this->tables as $name => $conf)
 		{
 			$menuname = isset($conf['menuname']) ? $conf['menuname'] : ucfirst($name);
@@ -102,5 +107,10 @@ class AdminConfig
 		}
 
 		return $nav;
+	}
+
+	public function dashboard()
+	{
+		return $this->dashboard;
 	}
 }
