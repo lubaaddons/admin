@@ -1,53 +1,13 @@
-<!doctype html>
-
-<html>
-
-	<head>
-
-		<link href='https://fonts.googleapis.com/css?family=Open+Sans:400,600,700,800,300' rel='stylesheet' type='text/css'>
-
-	</head>
-
-	<body>
-
-		<header>
-
-			<nav>
-
-				<ul>
-
-					<li>
-						<a href="<< url('/') >>">Home</a>
-					</li>
-
-					<foreach $nav as $name => $url>
-
-						<if $tablename == strtolower($name)>
-						<li class="active">
-						<else>
-						<li>
-						</if>
-							<a href="$$url">$$name</a>
-						</li>
-
-					</foreach>
-
-				</ul>
-
-			</nav>
-
-		</header>
-
-		<main>
-
-		</main>
-
-	</body>
-
-	<style>
-
-
-
-	</style>
-
-</html>
+$$form
+<a onclick="hideoverlay()" class="cancel_edit">Cancel</a>
+<script>
+function hideoverlay()
+{
+	$('.overlay').fadeOut(200, function(){
+		$(this).remove();
+	});
+	$('.ajax_container').fadeOut(200, function(){
+		$(this).remove();
+	});
+}
+</script>

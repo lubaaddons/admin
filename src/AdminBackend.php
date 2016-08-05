@@ -3,11 +3,17 @@
 namespace Luba;
 
 use Luba\Framework\View;
+use Flo\MySQL\MySQLResult;
 use SQL;
+use Redirect;
+use Form;
+use Input;
 
 class AdminBackend
 {
 	protected $config;
+
+	protected $table;
 
 	public function __construct($config)
 	{
@@ -39,7 +45,70 @@ class AdminBackend
 
 	public function edit($id)
 	{
+		$item = SQL::table($this->table)->find($id);
+		$tableconf = $this->getTableConfig();
+
+		if (!isset($tableconf['editable']))
+			throw new AdminException('No editable fields are defined!');
+
+		$editfields = $tableconf['editable'];
+		$types = [];
+
+		foreach ($editfields as $column)
+		{
+			$types[] = TypeToInput::make(SQL::table($this->table)->getColumnType($column));
+		}
+
+		$merged = array_combine($editfields, $types);
+
+		$form = $this->itemform($merged, (array) $item);
+		$form->action(url("admin/{$this->table}/update/$id"));
+
+		return new View('edit', ['editfields' => $merged, 'item' => $item, 'form' => $form], __DIR__.'/views/');
+	}
+
+	public function update($id)
+	{
+		$tableconf = $this->getTableConfig();
+
+		if (!isset($tableconf['editable']))
+			throw new AdminException('No editable fields are defined!');
+
+		$editfields = $tableconf['editable'];
+		$types = [];
+
+		foreach ($editfields as $column)
+		{
+			$types[] = TypeToInput::make(SQL::table($this->table)->getColumnType($column));
+		}
+
+		$merged = array_combine($editfields, $types);
+
+		$form = $this->itemform($merged);
+
+		if (!$form->validate())
+			Redirect::to(url("admin/{$this->table}/edit/$this->id"));
+
+		SQL::table($this->table)->update($id, Input::except('_token', 'save'));
+
+		Redirect::to(url("admin/{$this->table}"));
+	}
+
+	public function itemform($fields, $bindings = false)
+	{
+		$form = new Form;
 		
+		if ($bindings)
+			$form->bind($bindings);
+		
+		foreach ($fields as $name => $field)
+		{
+			$form->$field($name)->label(ucfirst($name));
+		}
+
+		$form->submit('save', 'Save', ['value' => 'Save']);
+
+		return $form;
 	}
 
 	public function create()
@@ -49,13 +118,18 @@ class AdminBackend
 
 	public function delete($id)
 	{
-		
+		$item = SQL::table($this->table)->where('id', $id)->first();
+		$action = url("admin/{$this->table}/postdelete/$id");
+
+		return new View('delete', ['item' => $item, 'action' => $action, 'displayed' => $this->config->tables()[$this->table]['displayed']], __DIR__.'/views/');
 	}
 
-	public function update($id)
+	public function postdelete($id)
 	{
-		
-	}
+		SQL::table($this->table)->where('id', $id)->delete();
+
+		Redirect::to(url("admin/{$this->table}"));
+	}	
 
 	public function store()
 	{
@@ -71,6 +145,8 @@ class AdminBackend
 	{
 		$tables = $this->config->tables();
 		
+		$this->table = $tablename;
+
 		if (isset($args[0]) && method_exists($this, $args[0]))
 		{
 			$method = array_shift($args);
@@ -121,5 +197,10 @@ class AdminBackend
 		$items = $items->get();
 
 		return $items;
+	}
+
+	public function getTableConfig()
+	{
+		return $this->config->tables()[$this->table];
 	}
 }
