@@ -9,14 +9,12 @@ class AdminBackend
 {
 	protected $config;
 
-	public function __construct(AdminConfig $config)
+	public function __construct($config)
 	{
-		$this->config = $config;
-	}
+		if (is_array($config))
+			$config = AdminConfig::make($config);
 
-	public function index()
-	{
-		return new View('index', $this->config->getItems()->toArray(), $this->config->template());
+		$this->config = $config;
 	}
 
 	public function edit($id)
@@ -52,11 +50,17 @@ class AdminBackend
 	public function __call($tablename, $args)
 	{
 		$tables = $this->config->tables();
+		
+		if (isset($args[0]) && method_exists($this, $args[0]))
+		{
+			$method = array_shift($args);
+			return call_user_func_array([$this, $method], $args);
+		}
 
 		if (isset($tables[$tablename]))
 		{
 			$table = $tables[$tablename];
-			$items = $this->getItems($table, $tablename);
+			$items = $this->getItems($table, $tablename); 
 
 			return new View('index', ['items' => $items, 'tableconf' => $table, 'nav' => $this->config->getNav(), 'tablename' => $tablename], $this->config->templateDir());
 		}
@@ -78,9 +82,9 @@ class AdminBackend
 		foreach ($displayed as $col => $title)
 		{
 			if (is_int($col))
-				$select[] = "$title";
+				$select[] = $title;
 			else
-				$select[] = "$col as $title";
+				$select[] = "$col";
 		}
 
 		$items = SQL::table($tablename)->select(implode(', ', $select));

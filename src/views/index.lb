@@ -4,7 +4,7 @@
 
 	<head>
 
-
+		<link href='https://fonts.googleapis.com/css?family=Open+Sans:400,600,700,800,300' rel='stylesheet' type='text/css'>
 
 	</head>
 
@@ -39,9 +39,110 @@
 		</header>
 
 		<main>
+			<a href="#" class="add">Add</a>
+			<table>
+				<thead>
+					<tr>
+						<foreach $tableconf['displayed'] as $name>
+							<th>$$name</th>
+						</foreach>
+						<th></th>
+						<th></th>
+					<tr>
+				</thead>
+				<body>
+					<foreach $items as $item>
+						<tr>
+
+							<foreach $tableconf['displayed'] as $col => $name>
+								<td><< $item->$col >></td>
+							</foreach>
+							<td class="edit"><a href="<< url('admin/'.$tablename.'/edit/'.$item->id) >>">Edit</a></td>
+							<td class="delete"><a href="<< url('admin/'.$tablename.'/delete/'.$item->id) >>">Delete</a></td>
+						</tr>
+					</foreach>
+				</tbody>
+
+			</table>
 
 		</main>
 
 	</body>
+
+	<style>
+
+	* {
+		font-family:'Open Sans';
+	}
+	body {
+		margin:0;
+	}
+	header {
+		background-color:#1f1f14;
+		height:35px;
+	}
+	header:after {
+		clear:both;
+		display:table;
+		content:'';
+	}
+	main {
+		padding:40px;
+	}
+	ul {
+		margin: 0;
+		padding-left: 10px;
+	}
+	li.active {
+		background-color:#4e4e32;
+	}
+	li {
+		display:block;
+		float:left;
+		list-style-type: none;
+		height:35px;
+	}
+	a {
+		text-decoration: none;
+		color: #008ae6;
+	}
+	main a:hover {
+		text-decoration: underline;
+	}
+	nav a {
+		display:block;
+		height:100%;
+		color:white;
+		padding:6px 10px;
+	}
+	.add {
+		display:block;
+		padding-left:5px;
+	}
+	.edit {
+		width:30px;
+	}
+	.delete {
+		width:50px;
+	}
+	table {
+		width:100%;
+		border-collapse: collapse;
+	}
+	td, th {
+		padding:5px;
+		text-align: left;
+	}
+	td {
+		border-bottom:1px solid lightgrey;
+	}
+	th {
+		border-bottom: 2px solid grey;
+	}
+	tr:hover {
+		background-color:#ffffcc;
+	}
+
+	</style>
 
 </html>
