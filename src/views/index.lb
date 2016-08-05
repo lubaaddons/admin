@@ -22,7 +22,7 @@
 
 					<foreach $nav as $name => $url>
 
-						<if $tablename == strtolower($name)>
+						<if Luba\Framework\URL::getInstance()->full() == $url>
 						<li class="active">
 						<else>
 						<li>
