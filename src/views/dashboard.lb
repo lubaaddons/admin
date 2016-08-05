@@ -53,13 +53,13 @@
 				$tablename = $table['name'];
 				</php>
 
+				<a href="<< url('admin/'.$tablename) >>">
 				<table>
 				<thead>
 					<tr>
 						<foreach $tableconf['displayed'] as $name>
 							<th>$$name</th>
 						</foreach>
-						<th><a href="<< url('admin/'.$tablename) >>">View</a>
 					<tr>
 				</thead>
 				<body>
@@ -74,6 +74,7 @@
 				</tbody>
 
 			</table>
+			</a>
 
 			</foreach>
 
@@ -103,6 +104,9 @@
 		border-collapse: collapse;
 		float:left;
 		margin:0 5%;
+	}
+	table:hover {
+		background-color:rgba(255, 255, 204, 0.4);
 	}
 	td, th {
 		padding:5px;
@@ -153,6 +157,10 @@
 		height:35px;
 	}
 	a {
+		color:black;
+		text-decoration:none;
+	}
+	table a {
 		text-decoration: none;
 		color: #008ae6;
 	}
