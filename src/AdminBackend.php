@@ -22,6 +22,11 @@ class AdminBackend
 
 		$this->config = $config;
 		$this->config->authenticate();
+
+		if (!is_dir(public_path('tempimages')))
+			mkdir(public_path('tempimages'));
+
+		$this->cleanThumbs();
 	}
 
 	public function index()
@@ -236,5 +241,16 @@ class AdminBackend
 	public function getTableConfig()
 	{
 		return $this->config->tables()[$this->table];
+	}
+
+	public function cleanThumbs()
+	{
+		$files = glob(public_path('tempimages/*'));
+
+		foreach($files as $file)
+		{
+			if (is_file($file))
+				unlink($file);
+		}
 	}
 }

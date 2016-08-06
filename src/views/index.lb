@@ -44,7 +44,11 @@
 				<thead>
 					<tr>
 						<foreach $tableconf['displayed'] as $name>
-							<th>$$name</th>
+							<if is_array($name)>
+								<th> << $name['name'] >> </th>
+							<else>
+								<th>$$name</th>
+							</if>
 						</foreach>
 						<th></th>
 						<th></th>
@@ -55,7 +59,21 @@
 						<tr>
 
 							<foreach $tableconf['displayed'] as $col => $name>
-								<td><< $item->$col >></td>
+								<if is_array($name)>
+									<if $name['type'] == 'image'>
+										<td>
+											<a target="_blank" href="<< url($item->$col) >>">
+												<php>
+												$tempname = str_random(10);
+												Luba\Image::make(url($item->$col))->thumbnail(100)->save(public_path('tempimages/'.$tempname))
+												</php>
+												<img src="<< url('tempimages/'.$tempname) >>">
+											</a>
+										</td>
+									</if>
+								<else>
+									<td><< $item->$col >></td>
+								</if>
 							</foreach>
 							<td class="edit"><a href="<< url('admin/'.$tablename.'/edit/'.$item->id) >>"  class="edit_link">Edit</a></td>
 							<td class="delete"><a href="<< url('admin/'.$tablename.'/delete/'.$item->id) >>"  class="delete_link">Delete</a></td>
