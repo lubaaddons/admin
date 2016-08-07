@@ -25,6 +25,8 @@ class AdminConfig
 
 	protected $dashboard = true;
 
+	protected $logoutlink = 'auth/logout';
+
 	public function __construct($config = [])
 	{
 		$this->set(static::$global_config);
@@ -124,5 +126,10 @@ class AdminConfig
 			return true;
 		else
 			throw new AdminException('Access Denied', 403);
+	}
+
+	public function logoutlink()
+	{
+		return $this->logoutlink;
 	}
 }

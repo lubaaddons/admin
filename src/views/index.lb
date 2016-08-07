@@ -34,6 +34,10 @@
 
 				</ul>
 
+				<a href="<< url($logoutlink) >>" class="logout">
+					Logout
+				</a>
+
 			</nav>
 
 		</header>
@@ -233,6 +237,10 @@
 		height:100%;
 		color:white;
 		padding:6px 10px;
+	}
+	nav .logout {
+		float:right;
+		margin-right: 20px;
 	}
 	.formfield label {
 		margin-bottom:10px;

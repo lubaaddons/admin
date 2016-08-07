@@ -45,6 +45,8 @@ class AdminBackend
 			$tables[] = ['name' => $name, 'config' => $config, 'items' => $items];
 		}
 
+
+
 		return new View('dashboard', ['nav' => $this->config->getNav(), 'tables' => $tables], __DIR__.'/views/');
 	}
 
@@ -197,7 +199,9 @@ class AdminBackend
 			$table = $tables[$tablename];
 			$items = $this->getItems($table, $tablename); 
 
-			return new View('index', ['items' => $items, 'tableconf' => $table, 'nav' => $this->config->getNav(), 'tablename' => $tablename], $this->config->templateDir());
+			$logoutlink = $this->config->logoutlink();
+
+			return new View('index', ['logoutlink' => $logoutlink, 'items' => $items, 'tableconf' => $table, 'nav' => $this->config->getNav(), 'tablename' => $tablename], $this->config->templateDir());
 		}
 		else
 			throw new AdminException("Action \"$func\" has not been configured!");
