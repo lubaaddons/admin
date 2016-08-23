@@ -87,6 +87,8 @@
 
 			</table>
 
+			$$pagination
+
 		</main>
 
 	</body>
@@ -266,6 +268,15 @@
 	}
 	input[type="submit"]:hover {
 		text-decoration:underline;
+	}
+	.pagination {
+
+	}
+	.pagination a {
+		
+	}
+	.pagination a.active {
+
 	}
 	</style>
 

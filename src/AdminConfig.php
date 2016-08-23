@@ -17,10 +17,6 @@ class AdminConfig
 
 	protected $auth;
 
-	protected $pagination = false;
-
-	protected $perpage;
-
 	protected $filters;
 
 	protected $dashboard = true;

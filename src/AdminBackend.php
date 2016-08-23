@@ -8,6 +8,7 @@ use SQL;
 use Redirect;
 use Form;
 use Input;
+use Luba\Framework\Paginator;
 
 class AdminBackend
 {
@@ -19,7 +20,7 @@ class AdminBackend
 	{
 		if (is_array($config))
 			$config = AdminConfig::make($config);
-
+		
 		$this->config = $config;
 		$this->config->authenticate();
 
@@ -44,8 +45,6 @@ class AdminBackend
 			});
 			$tables[] = ['name' => $name, 'config' => $config, 'items' => $items];
 		}
-
-
 
 		return new View('dashboard', ['nav' => $this->config->getNav(), 'tables' => $tables], __DIR__.'/views/');
 	}
@@ -197,17 +196,28 @@ class AdminBackend
 		if (isset($tables[$tablename]))
 		{
 			$table = $tables[$tablename];
-			$items = $this->getItems($table, $tablename); 
+
+			if (isset($table['pagination']) && $table['pagination'] == true)
+			{
+				$perpage = isset($table['perpage']) ? $table['perpage'] : 10;
+				$pagination = $this->makePagination($perpage, $table, $tablename);
+				$items = $pagination->getItems();
+			}
+			else
+			{
+				$items = $this->getItems($table, $tablename); 
+				$pagination = '';
+			}
 
 			$logoutlink = $this->config->logoutlink();
 
-			return new View('index', ['logoutlink' => $logoutlink, 'items' => $items, 'tableconf' => $table, 'nav' => $this->config->getNav(), 'tablename' => $tablename], $this->config->templateDir());
+			return new View('index', ['logoutlink' => $logoutlink, 'items' => $items, 'pagination' => $pagination, 'tableconf' => $table, 'nav' => $this->config->getNav(), 'tablename' => $tablename], $this->config->templateDir());
 		}
 		else
 			throw new AdminException("Action \"$func\" has not been configured!");
 	}
 
-	private function getItems(array $tableconf, $tablename, callable $otherfilter = NULL)
+	private function getItems(array $tableconf, $tablename, callable $otherfilter = NULL, $returnquery = false)
 	{
 		$select = [];
 
@@ -237,6 +247,9 @@ class AdminBackend
 		if ($otherfilter)
 			$otherfilter($items);
 
+		if ($returnquery)
+			return $items;
+
 		$items = $items->get();
 
 		return $items;
@@ -256,5 +269,14 @@ class AdminBackend
 			if (is_file($file))
 				unlink($file);
 		}
+	}
+
+	public function makePagination($perpage, $tableconf, $tablename)
+	{
+		$items = $this->getItems($tableconf, $tablename, NULL, true);
+		$count = $items->count();
+		$totalpages = (int) ceil($count / $perpage);
+		$paginator = new Paginator($totalpages, $items, $perpage);
+		return $paginator;
 	}
 }
