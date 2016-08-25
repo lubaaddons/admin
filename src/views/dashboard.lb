@@ -5,6 +5,8 @@
 	<head>
 
 		<link href='https://fonts.googleapis.com/css?family=Open+Sans:400,600,700,800,300' rel='stylesheet' type='text/css'>
+        <script src="https://code.jquery.com/jquery-3.1.0.min.js"></script>
+        <link href="<< url('admin/css') >>" rel="stylesheet" type="text/css">
 
 	</head>
 
@@ -39,7 +41,7 @@
 
 		</header>
 
-		<main>
+		<main class="dashboard">
 
 		<h1>Dashboard</h1>
 
@@ -51,30 +53,31 @@
 				$tableconf = $table['config'];
 				$items = $table['items'];
 				$tablename = $table['name'];
+                $title = $tableconf['menuname'];
 				</php>
 
-				<a href="<< url('admin/'.$tablename) >>">
-				<table>
-				<thead>
-					<tr>
-						<foreach $tableconf['displayed'] as $name>
-							<th>$$name</th>
-						</foreach>
-					<tr>
-				</thead>
-				<body>
-					<foreach $items as $item>
-						<tr>
+                <div class="dashboard_panel">
+    				<h2><a href="<< url('admin/'.$tablename) >>">$$title</a></h2>
+    				<table>
+    				<thead>
+    					<tr>
+    						<foreach $tableconf['displayed'] as $name>
+    							<th>$$name</th>
+    						</foreach>
+    					<tr>
+    				</thead>
+    				<body>
+    					<foreach $items as $item>
+    						<tr>
 
-							<foreach $tableconf['displayed'] as $col => $name>
-								<td><< $item->$col >></td>
-							</foreach>
-						</tr>
-					</foreach>
-				</tbody>
-
-			</table>
-			</a>
+    							<foreach $tableconf['displayed'] as $col => $name>
+    								<td><< $item->$col >></td>
+    							</foreach>
+    						</tr>
+    					</foreach>
+    				</tbody>
+                    </table>
+                </div>
 
 			</foreach>
 
@@ -83,93 +86,5 @@
 		</main>
 
 	</body>
-
-	<style>
-
-	h1 {
-		margin-left:5%;
-	}
-	.add {
-		display:block;
-		padding-left:5px;
-	}
-	.edit {
-		width:30px;
-	}
-	.delete {
-		width:50px;
-	}
-	table {
-		width:40%;
-		border-collapse: collapse;
-		float:left;
-		margin:0 5%;
-	}
-	table:hover {
-		background-color:rgba(255, 255, 204, 0.4);
-	}
-	td, th {
-		padding:5px;
-		text-align: left;
-	}
-	td {
-		border-bottom:1px solid lightgrey;
-	}
-	th {
-		border-bottom: 2px solid grey;
-	}
-	main a:hover {
-		text-decoration: underline;
-	}
-
-	</style>
-
-	<style>
-	* {
-		font-family:'Open Sans';
-	}
-	body {
-		margin:0;
-	}
-	header {
-		background-color:#1f1f14;
-		height:35px;
-	}
-	header:after {
-		clear:both;
-		display:table;
-		content:'';
-	}
-	main {
-		padding:40px;
-	}
-	ul {
-		margin: 0;
-		padding-left: 10px;
-	}
-	li.active {
-		background-color:#4e4e32;
-	}
-	li {
-		display:block;
-		float:left;
-		list-style-type: none;
-		height:35px;
-	}
-	a {
-		color:black;
-		text-decoration:none;
-	}
-	table a {
-		text-decoration: none;
-		color: #008ae6;
-	}
-	nav a {
-		display:block;
-		height:100%;
-		color:white;
-		padding:6px 10px;
-	}
-	</style>
 
 </html>

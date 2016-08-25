@@ -6,6 +6,9 @@
 		<title>Admin - $$tablename</title>
 		<link href='https://fonts.googleapis.com/css?family=Open+Sans:400,600,700,800,300' rel='stylesheet' type='text/css'>
 		<script src="https://code.jquery.com/jquery-3.1.0.min.js"></script>
+        <script src="//cdn.ckeditor.com/4.5.10/standard/ckeditor.js"></script>
+        <script src="//cdn.ckeditor.com/4.5.10/standard/adapters/jquery.js"></script>
+        <link href="<< url('admin/css') >>" rel="stylesheet" type="text/css">
 	</head>
 
 	<body>
@@ -131,153 +134,11 @@
 			$('.overlay').hide().fadeIn(200);
 			$('body').append('<div class="ajax_container"><div class="subcontainer">' + content + '</div></div>');
 			$('.ajax_container').hide().fadeIn(200);
+            $('.ajax_container .html').ckeditor(function() {},{'toolbar':'basic'});
 		}
 	});
 
 	</script>
 
-	<style>
-
-	.overlay {
-		background-color:rgba(0, 0, 0, 0.25);
-		position:fixed;
-		width:100%;
-		height:100%;
-		top:0;
-		left:0;
-	}
-	.ajax_container {
-		position:fixed;
-		top:20%;
-		left:50%;
-		width:30%;
-		margin-left:-15%;
-		background-color:white;
-		padding:20px;
-		max-height:500px;
-		overflow:hidden;
-		padding-right:0;
-	}
-	.subcontainer {
-		width:100%;
-		padding-right:20px;
-		max-height:500px;
-		overflow-y:scroll;
-	}
-	.add {
-		display:block;
-		padding-left:5px;
-	}
-	.edit {
-		width:30px;
-	}
-	.delete {
-		width:50px;
-	}
-	table {
-		width:100%;
-		border-collapse: collapse;
-	}
-	td, th {
-		padding:5px;
-		text-align: left;
-	}
-	td {
-		border-bottom:1px solid lightgrey;
-	}
-	th {
-		border-bottom: 2px solid grey;
-	}
-	tbody tr:hover {
-		background-color:#ffffcc;
-	}
-	main a:hover {
-		text-decoration: underline;
-	}
-
-	</style>
-
-	<style>
-	* {
-		font-family:'Open Sans', sans-serif;
-	}
-	body {
-		margin:0;
-	}
-	header {
-		background-color:#1f1f14;
-		height:35px;
-	}
-	header:after {
-		clear:both;
-		display:table;
-		content:'';
-	}
-	main {
-		padding:40px;
-	}
-	ul {
-		margin: 0;
-		padding-left: 10px;
-	}
-	li.active {
-		background-color:#4e4e32;
-	}
-	li {
-		display:block;
-		float:left;
-		list-style-type: none;
-		height:35px;
-	}
-	a {
-		text-decoration: none;
-		color: #008ae6;
-		cursor:pointer;
-	}
-	nav a {
-		display:block;
-		height:100%;
-		color:white;
-		padding:6px 10px;
-	}
-	nav .logout {
-		float:right;
-		margin-right: 20px;
-	}
-	.formfield label {
-		margin-bottom:10px;
-		display:inline-block;
-		width:200px;
-	}
-	input, textarea {
-		width:250px;
-	}
-	.cancel_edit:hover {
-		text-decoration:underline;
-	}
-	input[type="submit"] {
-		width:initial;
-		border:0;
-		background-color:transparent;
-		color:#008ae6;
-		cursor:pointer;
-		font-size:16px;
-		padding:0;
-		margin-right:10px;
-		float:left;
-	}
-	input[type="submit"]:hover {
-		text-decoration:underline;
-	}
-	.pagination {
-
-	}
-	.pagination a {
-		
-	}
-	.pagination a.active {
-
-	}
-	</style>
 
 </html>

@@ -20,7 +20,7 @@ class AdminBackend
 	{
 		if (is_array($config))
 			$config = AdminConfig::make($config);
-		
+
 		$this->config = $config;
 		$this->config->authenticate();
 
@@ -29,6 +29,12 @@ class AdminBackend
 
 		$this->cleanThumbs();
 	}
+
+    public function css()
+    {
+        header('Content-type: text/css');
+        return new View('admincss', [], __DIR__.'/views/');
+    }
 
 	public function index()
 	{
@@ -52,61 +58,64 @@ class AdminBackend
 	public function edit($id)
 	{
 		$item = SQL::table($this->table)->find($id);
-		$tableconf = $this->getTableConfig();
-
-		if (!isset($tableconf['editable']))
-			throw new AdminException('No editable fields are defined!');
-
-		$editfields = $tableconf['editable'];
-		$types = [];
-
-		foreach ($editfields as $column)
-		{
-			$types[] = TypeToInput::make(SQL::table($this->table)->getColumnType($column));
-		}
-
-		$merged = array_combine($editfields, $types);
-
-		$form = $this->itemform($merged, (array) $item);
+        $formfields = $this->getFormFields();
+		$form = $this->itemform($formfields, (array) $item);
 		$form->action(url("admin/{$this->table}/update/$id"));
 
-		return new View('edit', ['editfields' => $merged, 'item' => $item, 'form' => $form], __DIR__.'/views/');
+		return new View('edit', ['editfields' => $formfields, 'item' => $item, 'form' => $form], __DIR__.'/views/');
 	}
 
-	public function update($id)
-	{
-		$tableconf = $this->getTableConfig();
+    public function getFormFields() {
+        $tableconf = $this->getTableConfig();
 
-		if (!isset($tableconf['editable']))
-			throw new AdminException('No editable fields are defined!');
+        if (!isset($tableconf['editable']))
+            throw new AdminException('No editable fields are defined!');
 
-		$editfields = $tableconf['editable'];
-		$types = [];
+        $editfields = $tableconf['editable'];
+        $columns = [];
+        $types = [];
+        foreach ($editfields as $key => $value)
+        {
+            if(is_array($value)) {
+                //Detail config
+                $column = $key;
+                $types[] = $value['type'];
+            } else {
+                $column = $value;
+                $types[] = TypeToInput::make(SQL::table($this->table)->getColumnType($column));
+            }
+            $columns[] = $column;
+        }
 
-		foreach ($editfields as $column)
-		{
-			$types[] = TypeToInput::make(SQL::table($this->table)->getColumnType($column));
-		}
+        $formfields = array_combine($columns, $types);
+        return $formfields;
+    }
 
-		$merged = array_combine($editfields, $types);
+    public function getEditConfig($field) {
+        $tableconf = $this->getTableConfig();
+        $editfields = $tableconf['editable'];
+        return isset($editfields[$field])?$editfields[$field]:[];
+    }
 
-		$form = $this->itemform($merged);
-
-		SQL::table($this->table)->update($id, Input::except('_token', 'save'));
-
-		Redirect::to(url("admin/{$this->table}"));
-	}
 
 	public function itemform($fields, $bindings = false)
 	{
 		$form = new Form;
-		
+
 		if ($bindings)
 			$form->bind($bindings);
-		
+
 		foreach ($fields as $name => $field)
 		{
-			$form->$field($name)->label(ucfirst($name));
+            $attributes = [];
+            $config = $this->getEditConfig($name);
+            if($config && isset($config['attributes']))
+                $attributes = $config['attributes'];
+            if($field == "file") {
+                $form->$field($name, $attributes)->label(ucfirst($name));
+            } else {
+                $form->$field($name, null, $attributes)->label(ucfirst($name));
+            }
 		}
 
 		$form->submit('save', 'Save', ['value' => 'Save']);
@@ -116,48 +125,50 @@ class AdminBackend
 
 	public function create()
 	{
-		$tableconf = $this->getTableConfig();
-
-		if (!isset($tableconf['editable']))
-			throw new AdminException('No editable fields are defined!');
-
-		$editfields = $tableconf['editable'];
-		$types = [];
-
-		foreach ($editfields as $column)
-		{
-			$types[] = TypeToInput::make(SQL::table($this->table)->getColumnType($column));
-		}
-
-		$merged = array_combine($editfields, $types);
-
-		$form = $this->itemform($merged);
+        $formfields = $this->getFormFields();
+		$form = $this->itemform($formfields);
 		$form->action(url("admin/{$this->table}/store"));
 
-		return new View('edit', ['editfields' => $merged, 'form' => $form], __DIR__.'/views/');
+		return new View('edit', ['editfields' => $formfields, 'form' => $form], __DIR__.'/views/');
 	}
+
+    protected function getFileFields()
+    {
+        $tableconf = $this->getTableConfig();
+        $editfields = $tableconf['editable'];
+        $filefields = [];
+        foreach ($editfields as $key => $value) {
+            if(is_array($value) && $value['type']=='file') {
+                $filefields[$key] = $value;
+            }
+        }
+        return $filefields;
+    }
+
+    protected function getInputData() {
+        $data = Input::except('_token', 'save');
+        $filefields = $this->getFileFields();
+        foreach($filefields as $name => $config) {
+            if (Input::file($name)) {
+                $file = Input::file($name)->move(public_path($config['path']));
+                $data[$name] = $config['path'].'/'.$file->fullName();
+            } else {
+                unset($data[$name]);
+            }
+        }
+        return $data;
+    }
+
+    public function update($id)
+    {
+        SQL::table($this->table)->update($id, $this->getInputData());
+        Redirect::to(url("admin/{$this->table}"));
+    }
+
 
 	public function store()
 	{
-		$tableconf = $this->getTableConfig();
-
-		if (!isset($tableconf['editable']))
-			throw new AdminException('No editable fields are defined!');
-
-		$editfields = $tableconf['editable'];
-		$types = [];
-
-		foreach ($editfields as $column)
-		{
-			$types[] = TypeToInput::make(SQL::table($this->table)->getColumnType($column));
-		}
-
-		$merged = array_combine($editfields, $types);
-
-		$form = $this->itemform($merged);
-
-		SQL::table($this->table)->insert(Input::except('_token', 'save'));
-
+		SQL::table($this->table)->insert($this->getInputData());
 		Redirect::to(url("admin/{$this->table}"));
 	}
 
@@ -184,7 +195,7 @@ class AdminBackend
 	public function __call($tablename, $args)
 	{
 		$tables = $this->config->tables();
-		
+
 		$this->table = $tablename;
 
 		if (isset($args[0]) && method_exists($this, $args[0]))
@@ -205,7 +216,7 @@ class AdminBackend
 			}
 			else
 			{
-				$items = $this->getItems($table, $tablename); 
+				$items = $this->getItems($table, $tablename);
 				$pagination = '';
 			}
 
