@@ -274,9 +274,7 @@ class AdminBackend
 	public function makePagination($perpage, $tableconf, $tablename)
 	{
 		$items = $this->getItems($tableconf, $tablename, NULL, true);
-		$count = $items->count();
-		$totalpages = (int) ceil($count / $perpage);
-		$paginator = new Paginator($totalpages, $items, $perpage);
+		$paginator = new Paginator($items, $perpage);
 		return $paginator;
 	}
 }
