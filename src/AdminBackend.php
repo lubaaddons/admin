@@ -27,7 +27,7 @@ class AdminBackend
 		if (!is_dir(public_path('tempimages')))
 			mkdir(public_path('tempimages'));
 
-		$this->cleanThumbs();
+		//$this->cleanThumbs();
 	}
 
     public function css()
