@@ -92,6 +92,10 @@
 
 			$$pagination
 
+            <if $exportlink>
+            <p><a href="$$exportlink" target="_blank">Export</a></p>
+            </if>
+
 		</main>
 
 	</body>

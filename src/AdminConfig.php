@@ -21,6 +21,7 @@ class AdminConfig
 
 	protected $dashboard = true;
 
+    protected $loginlink = 'auth/login';
 	protected $logoutlink = 'auth/logout';
 
 	public function __construct($config = [])
@@ -116,13 +117,18 @@ class AdminConfig
 	{
 		if (!$this->auth)
 			return true;
-		
+
 		$auth = $this->auth;
 		if ($auth())
 			return true;
 		else
 			throw new AdminException('Access Denied', 403);
 	}
+
+    public function loginlink()
+    {
+        return $this->loginlink;
+    }
 
 	public function logoutlink()
 	{

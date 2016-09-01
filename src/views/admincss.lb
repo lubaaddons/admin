@@ -131,11 +131,28 @@
         text-decoration:underline;
     }
     .pagination {
-
+        padding-top:20px;
+        width:100%;
+    }
+    .pagination:after {
+        content:"";
+        display:block;
+        clear:both;
     }
     .pagination a {
+        display:inline-block;
+        width:30px;
+        height:30px;
+        margin-right:20px;
+        line-height:30px;
+        vertical-align:center;
+        text-align:center;
+        border:1px solid #008ae6;
     }
-    .pagination a.active {
+    .pagination a.active, .pagination a:hover {
+        background-color: #008ae6;
+        color:#fff;
+        text-decoration:none;
     }
 
 .dashboard .table_container .dashboard_panel {

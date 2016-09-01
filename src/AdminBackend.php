@@ -9,6 +9,7 @@ use Redirect;
 use Form;
 use Input;
 use Luba\Framework\Paginator;
+use Luba\Excel;
 
 class AdminBackend
 {
@@ -22,8 +23,15 @@ class AdminBackend
 			$config = AdminConfig::make($config);
 
 		$this->config = $config;
-		$this->config->authenticate();
 
+        try {
+            $this->config->authenticate();
+        } catch (AdminException $e) {
+            if($loginlink = $this->config->loginlink())
+                Redirect::to($loginlink);
+            else
+                throw $e;
+        }
 		if (!is_dir(public_path('tempimages')))
 			mkdir(public_path('tempimages'));
 
@@ -192,6 +200,18 @@ class AdminBackend
 		return true;
 	}
 
+    public function export()
+    {
+        $items = SQL::table($this->table)->get();
+
+        $tables = $this->config->tables();
+        $export_config = $tables[$this->table]['export'];
+        $fields = $export_config['fields'];
+
+        $excel = Excel::create()->fromDataCollection($items, $fields);
+        return $excel->output($export_config['filename']);
+    }
+
 	public function __call($tablename, $args)
 	{
 		$tables = $this->config->tables();
@@ -222,7 +242,12 @@ class AdminBackend
 
 			$logoutlink = $this->config->logoutlink();
 
-			return new View('index', ['logoutlink' => $logoutlink, 'items' => $items, 'pagination' => $pagination, 'tableconf' => $table, 'nav' => $this->config->getNav(), 'tablename' => $tablename], $this->config->templateDir());
+            $exportlink = "";
+            if(isset($table['export'])) {
+                $exportlink = url("admin/{$this->table}/export");
+            }
+
+			return new View('index', ['logoutlink' => $logoutlink, 'items' => $items, 'pagination' => $pagination, 'tableconf' => $table, 'nav' => $this->config->getNav(), 'tablename' => $tablename, 'exportlink' => $exportlink], $this->config->templateDir());
 		}
 		else
 			throw new AdminException("Action \"$func\" has not been configured!");
