@@ -11,13 +11,36 @@ use Input;
 use Luba\Framework\Paginator;
 use Luba\Excel;
 use Flo\MySQL\Collection;
+use Luba\Framework\Controller;
 
-class AdminBackend
+class AdminBackend extends Controller
 {
+	/**
+	 * Admin Config
+	 *
+	 * @var Luba\AdminConfig
+	 */
 	protected $config;
 
+	/**
+	 * Current selected table
+	 *
+	 * @var string
+	 */
 	protected $table;
 
+	/**
+	 * Disable controller method check
+	 *
+	 * @var bool
+	 */
+	protected $global = true;
+
+	/**
+	 * Constructor
+	 *
+	 * @param array|AdminConfig $config
+	 */
 	public function __construct($config)
 	{
 		if (is_array($config))
@@ -25,9 +48,12 @@ class AdminBackend
 
 		$this->config = $config;
 
-        try {
+        try
+        {
             $this->config->authenticate();
-        } catch (AdminException $e) {
+        }
+        catch (AdminException $e)
+        {
             if($loginlink = $this->config->loginlink())
                 Redirect::to($loginlink);
             else
@@ -39,12 +65,22 @@ class AdminBackend
 		//$this->cleanThumbs();
 	}
 
+	/**
+	 * Load the css style
+	 *
+	 * @return View
+	 */
     public function css()
     {
         header('Content-type: text/css');
         return new View('admincss', [], __DIR__.'/views/');
     }
 
+    /**
+     * Get the dashboard page
+     *
+     * @return View
+     */
 	public function index()
 	{
 		if ($this->config->dashboard() === false)
@@ -64,6 +100,26 @@ class AdminBackend
 		return new View('dashboard', ['nav' => $this->config->getNav(), 'tables' => $tables], __DIR__.'/views/');
 	}
 
+	/**
+	 * Get the create form
+	 *
+	 * @return View
+	 */
+	public function create()
+	{
+        $formfields = $this->getFormFields();
+		$form = $this->itemform($formfields);
+		$form->action(url("admin/{$this->table}/store"));
+
+		return new View('edit', ['editfields' => $formfields, 'form' => $form], __DIR__.'/views/');
+	}
+
+	/**
+	 * Get the edit form
+	 *
+	 * @param int $id
+	 * @return View
+	 */
 	public function edit($id)
 	{
 		$item = SQL::table($this->table)->find($id);
@@ -74,6 +130,11 @@ class AdminBackend
 		return new View('edit', ['editfields' => $formfields, 'item' => $item, 'form' => $form], __DIR__.'/views/');
 	}
 
+	/**
+	 * Get the Edit / Add form fields
+	 *
+	 * @return array
+	 */
     public function getFormFields()
     {
         $tableconf = $this->getTableConfig();
@@ -107,15 +168,27 @@ class AdminBackend
         return $formfields;
     }
 
+    /**
+     * Get the config for an edit field
+     *
+     * @param string $field
+     * @return array
+     */
     public function getEditConfig($field)
     {
         $tableconf = $this->getTableConfig();
         $editfields = $tableconf['editable'];
 
-        return isset($editfields[$field])?$editfields[$field]:[];
+        return isset($editfields[$field]) ? $editfields[$field] : [];
     }
 
-
+    /**
+     * Get the form for Edit / Add
+     *
+     * @param array $field
+     * @param array $bindings
+     * @return Form
+     */
 	public function itemform($fields, $bindings = false)
 	{
 		$form = new Form;
@@ -158,15 +231,11 @@ class AdminBackend
 		return $form;
 	}
 
-	public function create()
-	{
-        $formfields = $this->getFormFields();
-		$form = $this->itemform($formfields);
-		$form->action(url("admin/{$this->table}/store"));
-
-		return new View('edit', ['editfields' => $formfields, 'form' => $form], __DIR__.'/views/');
-	}
-
+	/**
+	 * Get all fields that have a file
+	 *
+	 * @return array
+	 */
     protected function getFileFields()
     {
         $tableconf = $this->getTableConfig();
@@ -175,7 +244,7 @@ class AdminBackend
 
         foreach ($editfields as $key => $value)
         {
-            if(is_array($value) && $value['type']=='file')
+            if(is_array($value) && $value['type'] == 'file')
             {
                 $filefields[$key] = $value;
             }
@@ -184,6 +253,11 @@ class AdminBackend
         return $filefields;
     }
 
+    /**
+     * Get the input data
+     *
+     * @return array
+     */
     protected function getInputData()
     {
         $data = Input::except('_token', 'save');
@@ -204,19 +278,35 @@ class AdminBackend
         return $data;
     }
 
+    /**
+     * Update an entry
+     *
+     * @param int $id
+     * @return void
+     */
     public function update($id)
     {
         SQL::table($this->table)->update($id, $this->getInputData());
         Redirect::to(url("admin/{$this->table}"));
     }
 
-
+    /**
+     * Create an entry
+     *
+     * @return void
+     */
 	public function store()
 	{
 		SQL::table($this->table)->insert($this->getInputData());
 		Redirect::to(url("admin/{$this->table}"));
 	}
 
+	/**
+	 * Get the delete view
+	 *
+	 * @param int $id
+	 * @return View
+	 */
 	public function delete($id)
 	{
 		$item = SQL::table($this->table)->where('id', $id)->first();
@@ -225,6 +315,12 @@ class AdminBackend
 		return new View('delete', ['item' => $item, 'action' => $action, 'displayed' => $this->config->tables()[$this->table]['displayed']], __DIR__.'/views/');
 	}
 
+	/**
+	 * Delete an entry
+	 *
+	 * @param int $id
+	 * @return void
+	 */
 	public function postdelete($id)
 	{
 		SQL::table($this->table)->where('id', $id)->delete();
@@ -232,11 +328,11 @@ class AdminBackend
 		Redirect::to(url("admin/{$this->table}"));
 	}
 
-	public function actionIsAllowed()
-	{
-		return true;
-	}
-
+	/**
+	 * Export a table
+	 *
+	 * @return file
+	 */
     public function export()
     {
         $items = SQL::table($this->table)->get();
@@ -249,18 +345,28 @@ class AdminBackend
         return $excel->output($export_config['filename']);
     }
 
+    /**
+     * Catchall for all URLs called
+     *
+     * @param string $tablename
+     * @param array $args
+     */
 	public function __call($tablename, $args)
 	{
+		// Get all table configs
 		$tables = $this->config->tables();
 
+		// Set the current table
 		$this->table = $tablename;
 
+		// Check if the called method is defined in controller
 		if (isset($args[0]) && method_exists($this, $args[0]))
 		{
 			$method = array_shift($args);
 			return call_user_func_array([$this, $method], $args);
 		}
 
+		// Check if the table config exists
 		if (isset($tables[$tablename]))
 		{
 			$table = $tables[$tablename];
@@ -279,17 +385,49 @@ class AdminBackend
 
 			$logoutlink = $this->config->logoutlink();
 
+			// Set export link
             $exportlink = "";
-            if(isset($table['export'])) {
+
+            if(isset($table['export']))
+            {
                 $exportlink = url("admin/{$this->table}/export");
             }
 
-			return new View('index', ['logoutlink' => $logoutlink, 'items' => $items, 'pagination' => $pagination, 'tableconf' => $table, 'nav' => $this->config->getNav(), 'tablename' => $tablename, 'exportlink' => $exportlink], $this->config->templateDir());
+            // Set import link
+            $importlink = NULL;
+
+            if (isset($table['import']))
+            {
+            	$i = $table['import']['action'];
+            	$importlink = url("admin/$i");
+            }
+
+			return new View('index', [
+
+				'logoutlink'	=> $logoutlink,
+				'items'			=> $items,
+				'pagination'	=> $pagination,
+				'tableconf'		=> $table,
+				'nav'			=> $this->config->getNav(),
+				'tablename'		=> $tablename,
+				'exportlink'	=> $exportlink,
+				'importlink'	=> $importlink
+
+			], $this->config->templateDir());
 		}
 		else
 			throw new AdminException("Action \"$func\" has not been configured!");
 	}
 
+	/**
+	 * Get the items to show in the table view
+	 *
+	 * @param array $tableconf
+	 * @param string $tablename
+	 * @param callable $otherfilter
+	 * @param bool $returnquery
+	 * @return Flo\MySQL\Collection
+	 */
 	private function getItems(array $tableconf, $tablename, callable $otherfilter = NULL, $returnquery = false)
 	{
 		$select = [];
@@ -328,11 +466,21 @@ class AdminBackend
 		return $items;
 	}
 
+	/**
+	 * Get the table config
+	 *
+	 * @return array
+	 */
 	public function getTableConfig()
 	{
 		return $this->config->tables()[$this->table];
 	}
 
+	/**
+	 * Clean the cretaed thumbnails
+	 *
+	 * @return void
+	 */
 	public function cleanThumbs()
 	{
 		$files = glob(public_path('tempimages/*'));
@@ -344,10 +492,19 @@ class AdminBackend
 		}
 	}
 
+	/**
+	 * Create the pagination
+	 *
+	 * @param int $perpage
+	 * @param array $tableconf
+	 * @param string $tablename
+	 * @return Paginator
+	 */
 	public function makePagination($perpage, $tableconf, $tablename)
 	{
 		$items = $this->getItems($tableconf, $tablename, NULL, true);
 		$paginator = new Paginator($items, $perpage);
+
 		return $paginator;
 	}
 }

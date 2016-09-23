@@ -96,6 +96,10 @@
             <p><a href="$$exportlink" target="_blank">Export</a></p>
             </if>
 
+            <if $importlink>
+            <p><a href="$$importlink">Import</p>
+            </if>
+
 		</main>
 
 	</body>
