@@ -402,6 +402,16 @@ class AdminBackend extends Controller
             	$importlink = url("admin/$i");
             }
 
+            $otherlinks = [];
+
+            if (isset($table['links']))
+            {
+            	foreach ($table['links'] as $name => $action)
+            	{
+            		$otherlinks[$name] = $action();
+            	}
+            }
+
 			return new View('index', [
 
 				'logoutlink'	=> $logoutlink,
@@ -411,12 +421,13 @@ class AdminBackend extends Controller
 				'nav'			=> $this->config->getNav(),
 				'tablename'		=> $tablename,
 				'exportlink'	=> $exportlink,
-				'importlink'	=> $importlink
+				'importlink'	=> $importlink,
+				'otherlinks'	=> $otherlinks
 
 			], $this->config->templateDir());
 		}
 		else
-			throw new AdminException("Action \"$func\" has not been configured!");
+			throw new AdminException("Action \"$tablename\" has not been configured!");
 	}
 
 	/**
