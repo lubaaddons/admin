@@ -22,6 +22,7 @@ class AdminConfig
 	protected $dashboard = true;
 
     protected $loginlink = 'auth/login';
+    
 	protected $logoutlink = 'auth/logout';
 
 	public function __construct($config = [])

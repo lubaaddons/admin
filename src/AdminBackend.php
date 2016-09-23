@@ -37,6 +37,13 @@ class AdminBackend extends Controller
 	protected $global = true;
 
 	/**
+	 * Route used to access admin interface
+	 *
+	 * @var string
+	 */
+	protected $adminroute = 'admin';
+
+	/**
 	 * Constructor
 	 *
 	 * @param array|AdminConfig $config
