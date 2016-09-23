@@ -10,6 +10,7 @@ use Form;
 use Input;
 use Luba\Framework\Paginator;
 use Luba\Excel;
+use Flo\MySQL\Collection;
 
 class AdminBackend
 {
@@ -73,7 +74,8 @@ class AdminBackend
 		return new View('edit', ['editfields' => $formfields, 'item' => $item, 'form' => $form], __DIR__.'/views/');
 	}
 
-    public function getFormFields() {
+    public function getFormFields()
+    {
         $tableconf = $this->getTableConfig();
 
         if (!isset($tableconf['editable']))
@@ -82,26 +84,34 @@ class AdminBackend
         $editfields = $tableconf['editable'];
         $columns = [];
         $types = [];
+
         foreach ($editfields as $key => $value)
         {
-            if(is_array($value)) {
+            if(is_array($value))
+            {
                 //Detail config
                 $column = $key;
                 $types[] = $value['type'];
-            } else {
+            }
+            else
+            {
                 $column = $value;
                 $types[] = TypeToInput::make(SQL::table($this->table)->getColumnType($column));
             }
+
             $columns[] = $column;
         }
 
         $formfields = array_combine($columns, $types);
+
         return $formfields;
     }
 
-    public function getEditConfig($field) {
+    public function getEditConfig($field)
+    {
         $tableconf = $this->getTableConfig();
         $editfields = $tableconf['editable'];
+
         return isset($editfields[$field])?$editfields[$field]:[];
     }
 
@@ -117,11 +127,28 @@ class AdminBackend
 		{
             $attributes = [];
             $config = $this->getEditConfig($name);
+
             if($config && isset($config['attributes']))
                 $attributes = $config['attributes'];
-            if($field == "file") {
+
+            if($field == "file")
+            {
                 $form->$field($name, $attributes)->label(ucfirst($name));
-            } else {
+            }
+            elseif ($field == "select")
+            {
+            	$listings = $config['listings'];
+            	$list = $listings();
+            	
+            	if ($list instanceof Collection)
+            		$list = $list->toArray();
+            	else
+            		$list = (array) $list;
+
+            	$form->select($name, $list, NULL, $attributes)->label(isset($config['name']) ? $config['name'] : ucfirst($name));
+            }
+            else
+            {
                 $form->$field($name, null, $attributes)->label(ucfirst($name));
             }
 		}
@@ -145,22 +172,32 @@ class AdminBackend
         $tableconf = $this->getTableConfig();
         $editfields = $tableconf['editable'];
         $filefields = [];
-        foreach ($editfields as $key => $value) {
-            if(is_array($value) && $value['type']=='file') {
+
+        foreach ($editfields as $key => $value)
+        {
+            if(is_array($value) && $value['type']=='file')
+            {
                 $filefields[$key] = $value;
             }
         }
+
         return $filefields;
     }
 
-    protected function getInputData() {
+    protected function getInputData()
+    {
         $data = Input::except('_token', 'save');
         $filefields = $this->getFileFields();
-        foreach($filefields as $name => $config) {
-            if (Input::file($name)) {
+
+        foreach($filefields as $name => $config)
+        {
+            if (Input::file($name))
+            {
                 $file = Input::file($name)->move(public_path($config['path']));
                 $data[$name] = $config['path'].'/'.$file->fullName();
-            } else {
+            }
+            else
+            {
                 unset($data[$name]);
             }
         }
@@ -274,9 +311,9 @@ class AdminBackend
 
 		$items = SQL::table($tablename)->select(implode(', ', $select));
 
-		if (isset($tableconf['filter']))
+		if (isset($tableconf['query']))
 		{
-			$filter = $tableconf['filter'];
+			$filter = $tableconf['query'];
 			$filter($items);
 		}
 
