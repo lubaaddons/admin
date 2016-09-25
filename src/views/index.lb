@@ -101,8 +101,8 @@
             </if>
 
             <if !empty($otherlinks)>
-	            <foreach $otherlinks as $name => $link>
-	            	<p><a href="$$link">$$name</a></p>
+	            <foreach $otherlinks as $link>
+	            	$$link
 	            </foreach>
             </if>
 
@@ -130,6 +130,10 @@
 			hideoverlay();
 		});
 		$('.add').click(function(e){
+			e.preventDefault();
+			ajaxRequest($(this).attr('href'));
+		});
+		$('a[ajax="true"]').click(function(e){
 			e.preventDefault();
 			ajaxRequest($(this).attr('href'));
 		});

@@ -413,9 +413,10 @@ class AdminBackend extends Controller
 
             if (isset($table['links']))
             {
-            	foreach ($table['links'] as $name => $action)
+            	foreach ($table['links'] as $callback)
             	{
-            		$otherlinks[$name] = $action();
+            		$callback($customlink = new AdminCustomLink);
+            		$otherlinks[] = $customlink;
             	}
             }
 
