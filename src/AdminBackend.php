@@ -390,6 +390,7 @@ class AdminBackend extends Controller
 				$pagination = '';
 			}
 
+			// Set logout link
 			$logoutlink = $this->config->logoutlink();
 
 			// Set export link
@@ -409,6 +410,7 @@ class AdminBackend extends Controller
             	$importlink = url("admin/$i");
             }
 
+            // Custom links
             $otherlinks = [];
 
             if (isset($table['links']))
@@ -420,6 +422,15 @@ class AdminBackend extends Controller
             	}
             }
 
+            $adminfilter = false;
+
+            if (isset($table['filter']))
+            {
+            	$filters = $table['filter'];
+            	$filters($adminfilter = new AdminFilter);
+            }
+
+            // Return view
 			return new View('index', [
 
 				'logoutlink'	=> $logoutlink,
@@ -430,7 +441,8 @@ class AdminBackend extends Controller
 				'tablename'		=> $tablename,
 				'exportlink'	=> $exportlink,
 				'importlink'	=> $importlink,
-				'otherlinks'	=> $otherlinks
+				'otherlinks'	=> $otherlinks,
+				'adminfilter'	=> $adminfilter
 
 			], $this->config->templateDir());
 		}
@@ -470,12 +482,19 @@ class AdminBackend extends Controller
 
 		if (isset($tableconf['query']))
 		{
-			$filter = $tableconf['query'];
-			$filter($items);
+			$customquery = $tableconf['query'];
+			$customquery($items);
 		}
 
 		if ($otherfilter)
 			$otherfilter($items);
+
+		if (Input::get())
+		{
+			$filters = $tableconf['filter'];
+			$filters($adminfilter = new AdminFilter);
+			$items = $adminfilter->filter($items);
+		}
 
 		if ($returnquery)
 			return $items;

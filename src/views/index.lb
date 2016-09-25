@@ -25,7 +25,7 @@
 
 					<foreach $nav as $name => $url>
 
-						<if Luba\Framework\URL::getInstance()->full() == $url>
+						<if URL::withoutParams() == $url>
 						<li class="active">
 						<else>
 						<li>
@@ -46,7 +46,19 @@
 		</header>
 
 		<main>
+
+			<if $adminfilter>
+				<a href="#" class="adminfilter_link">Filter</a>
+				<form class="adminfilter" method="get" action="<< URL::full() >>">
+					$$adminfilter
+					<div class="filterfield">
+					<input type="submit" value="Search">
+					</div>
+				</form>
+			</if>
+
 			<a href="<< url('admin/'.$tablename.'/create') >>" class="add">Add</a>
+
 			<table>
 				<thead>
 					<tr>
@@ -154,6 +166,17 @@
 			$('.ajax_container').hide().fadeIn(200);
             $('.ajax_container .html').ckeditor(function() {},{'toolbar':'basic'});
 		}
+
+		<if !Input::get()>
+
+		$('.adminfilter').hide();
+
+		</if>
+
+		$('.adminfilter_link').click(function(e){
+			e.preventDefault();
+			$('.adminfilter').slideToggle();
+		})
 	});
 
 	</script>
