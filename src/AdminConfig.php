@@ -101,6 +101,10 @@ class AdminConfig
 
 		foreach ($this->tables as $name => $conf)
 		{
+			$auth = isset($conf['auth']) ? $conf['auth'] : NULL;
+			if ($auth && $auth() === false)
+				continue;
+
 			$menuname = isset($conf['menuname']) ? $conf['menuname'] : ucfirst($name);
 
 			$nav[$menuname] = url("admin/$name");

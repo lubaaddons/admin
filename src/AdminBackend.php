@@ -8,10 +8,12 @@ use SQL;
 use Redirect;
 use Form;
 use Input;
+use URL;
 use Luba\Framework\Paginator;
 use Luba\Excel;
 use Flo\MySQL\Collection;
 use Luba\Framework\Controller;
+use Luba\Exceptions\PermissionDeniedException;
 
 class AdminBackend extends Controller
 {
@@ -366,17 +368,23 @@ class AdminBackend extends Controller
 		// Set the current table
 		$this->table = $tablename;
 
-		// Check if the called method is defined in controller
-		if (isset($args[0]) && method_exists($this, $args[0]))
-		{
-			$method = array_shift($args);
-			return call_user_func_array([$this, $method], $args);
-		}
-
 		// Check if the table config exists
 		if (isset($tables[$tablename]))
 		{
 			$table = $tables[$tablename];
+
+			// Check permissions
+			$auth = isset($table['auth']) ? $table['auth'] : NULL;
+
+			if ($auth && $auth() === false)
+				throw new PermissionDeniedException(URL::withoutParams());
+
+			// Check if the called method is defined in controller
+			if (isset($args[0]) && method_exists($this, $args[0]))
+			{
+				$method = array_shift($args);
+				return call_user_func_array([$this, $method], $args);
+			}
 
 			if (isset($table['pagination']) && $table['pagination'] == true)
 			{
