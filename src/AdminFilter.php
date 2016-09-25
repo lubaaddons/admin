@@ -12,7 +12,7 @@ class AdminFilter
 	public function select($name, $dbcol, $values = [], $cond = '=')
 	{
 		if (!isset($values[0]) && !isset($values['0']))
-			$values['0'] = 'All';
+			$values = ['0' => 'All'] + $values;
 
 		$this->filters[] = ['type' => 'select', 'name' => $name, 'col' => $dbcol, 'values' => $values, 'condition' => $cond];
 	}
