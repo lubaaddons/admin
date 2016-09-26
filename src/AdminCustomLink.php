@@ -37,9 +37,9 @@ class AdminCustomLink
 		}
 
 		$linkattr = implode(' ', $linkattr);
-		$ajax = $this->ajax ? 'true' : 'false';
+		$ajax = $this->ajax ? 'data-behaviour="ajax"' : '';
 
-		return "<a href=\"{$this->url}\" ajax=$ajax $linkattr>{$this->name}</a>";
+		return "<a href=\"{$this->url}\" $ajax $linkattr>{$this->name}</a>";
 	}
 
 	public function __tostring()
