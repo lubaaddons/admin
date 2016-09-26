@@ -62,7 +62,7 @@ class AdminBackend extends Controller
         {
             $this->config->authenticate();
         }
-        catch (AdminException $e)
+        catch (PermissionDeniedException $e)
         {
             if($loginlink = $this->config->loginlink())
                 Redirect::to($loginlink);
