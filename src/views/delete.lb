@@ -7,31 +7,5 @@ $$name: << $item->$column >><br>
 <form action="$$action" method="post">
 	<input type="hidden" value="<< $item->id >>">
 	<input onclick="sendform()" type="submit" value="Delete" class="confirm_delete">
-	<a onclick="hideoverlay()" class="cancel_delete">Cancel</a>
+	<a href="javascript:;" data-behaviour="close" class="cancel_delete">Cancel</a>
 </form>
-
-<style>
-	.cancel_delete, .confirm_delete {
-		background-color:transparent;
-		color:#008ae6;
-		border:0;
-		font-size:16px;
-		cursor:pointer;
-		padding:0 6px 0 0;
-	}
-	.cancel_delete:hover, .confirm_delete:hover {
-		text-decoration: underline;
-	}
-</style>
-
-<script>
-function hideoverlay()
-{
-	$('.overlay').fadeOut(200, function(){
-		$(this).remove();
-	});
-	$('.ajax_container').fadeOut(200, function(){
-		$(this).remove();
-	});
-}
-</script>

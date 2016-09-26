@@ -1,13 +1,2 @@
 $$form
-<a onclick="hideoverlay()" class="cancel_edit">Cancel</a>
-<script>
-function hideoverlay()
-{
-	$('.overlay').fadeOut(200, function(){
-		$(this).remove();
-	});
-	$('.ajax_container').fadeOut(200, function(){
-		$(this).remove();
-	});
-}
-</script>
+<a data-behaviour="close" class="cancel_edit">Cancel</a>
