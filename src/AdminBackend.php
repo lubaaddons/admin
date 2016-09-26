@@ -9,6 +9,7 @@ use Redirect;
 use Form;
 use Input;
 use URL;
+use Auth;
 use Luba\Framework\Paginator;
 use Luba\Excel;
 use Flo\MySQL\Collection;
@@ -229,6 +230,10 @@ class AdminBackend extends Controller
 
             	$form->select($name, $list, NULL, $attributes)->label(isset($config['name']) ? $config['name'] : ucfirst($name));
             }
+            elseif ($field == 'password')
+            {
+            	$form->password($name.'__password', $attributes)->label(ucfirst($name));
+            }
             else
             {
                 $form->$field($name, null, $attributes)->label(ucfirst($name));
@@ -269,7 +274,23 @@ class AdminBackend extends Controller
      */
     protected function getInputData()
     {
-        $data = Input::except('_token', 'save');
+        $inputs = Input::except('_token', 'save');
+
+        $data = [];
+
+        foreach ($inputs as $key => $value)
+        {
+        	if (stripos($key, '__password') !== false)
+        	{
+        		if (!$value or $value == '' or is_null($value))
+        			continue;
+
+        		$data[str_replace('__password', '', $key)] = Auth::hash($value);
+        	}
+        	else
+        		$data[$key] = $value;
+        }
+
         $filefields = $this->getFileFields();
 
         foreach($filefields as $name => $config)

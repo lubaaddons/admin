@@ -6,6 +6,7 @@ use SQL;
 use Luba\Framework\View;
 use Closure;
 use Flo\MySQL\MySQL;
+use Luba\Exceptions\PermissionDeniedException;
 
 class AdminConfig
 {
@@ -124,10 +125,11 @@ class AdminConfig
 			return true;
 
 		$auth = $this->auth;
+
 		if ($auth())
 			return true;
 		else
-			throw new AdminException('Access Denied', 403);
+			throw new PermissionDeniedException(\URL::withoutParams());
 	}
 
     public function loginlink()
