@@ -118,7 +118,6 @@ class AdminBackend extends Controller
 	public function create()
 	{
         $formfields = $this->getFormFields();
-        dd($formfields);
 		$form = $this->itemform($formfields);
 		$form->action(url("admin/{$this->table}/store"));
 
