@@ -118,6 +118,7 @@ class AdminBackend extends Controller
 	public function create()
 	{
         $formfields = $this->getFormFields();
+        dd($formfields);
 		$form = $this->itemform($formfields);
 		$form->action(url("admin/{$this->table}/store"));
 
@@ -134,7 +135,7 @@ class AdminBackend extends Controller
 	{
 		$item = SQL::table($this->table)->find($id);
         $formfields = $this->getFormFields();
-		$form = $this->itemform($formfields, (array) $item);
+		$form = $this->itemform($formfields, $item->toArray());
 		$form->action(url("admin/{$this->table}/update/$id"));
 
 		return new View('edit', ['editfields' => $formfields, 'item' => $item, 'form' => $form], __DIR__.'/views/');
@@ -305,6 +306,7 @@ class AdminBackend extends Controller
                 unset($data[$name]);
             }
         }
+
         return $data;
     }
 
