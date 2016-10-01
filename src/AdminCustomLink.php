@@ -12,10 +12,17 @@ class AdminCustomLink
 
 	public $name = '';
 
+    public $target = '';
+
 	public function ajax($ajax = true)
 	{
 		$this->ajax = $ajax;
 	}
+
+    public function target($target = '')
+    {
+        $this->target = $target;
+    }
 
 	public function url($url = '')
 	{
@@ -38,8 +45,9 @@ class AdminCustomLink
 
 		$linkattr = implode(' ', $linkattr);
 		$ajax = $this->ajax ? 'data-behaviour="ajax"' : '';
+        $target = $this->target ? 'target="'.$this->target.'"' : '';
 
-		return "<a href=\"{$this->url}\" $ajax $linkattr>{$this->name}</a>";
+		return "<a href=\"{$this->url}\" $ajax $target $linkattr>{$this->name}</a>";
 	}
 
 	public function __tostring()
