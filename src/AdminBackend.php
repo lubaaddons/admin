@@ -519,7 +519,7 @@ class AdminBackend extends Controller
 		if ($otherfilter)
 			$otherfilter($items);
 
-		if (Input::get())
+		if (Input::get() && isset($tableconf['filter']))
 		{
 			$filters = $tableconf['filter'];
 			$filters($adminfilter = new AdminFilter);
