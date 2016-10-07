@@ -9,7 +9,7 @@
     ],
     "require": {
         "phpoffice/phpexcel": "1.8.*",
-        "lubaaddons/image": "dev-master"
+        "lubaaddons/image": "1.0.*"
     },
     "autoload": {
         "psr-4": {
