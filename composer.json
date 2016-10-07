@@ -1,7 +1,7 @@
 {
     "name": "lubaaddons/admin",
     "description": "Admin Backend for Luba",
-    "version": "0.1",
+    "version": "1.0",
     "authors": [
         {
             "name": "Flo Stone"
