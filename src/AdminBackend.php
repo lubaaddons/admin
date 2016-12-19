@@ -166,7 +166,7 @@ class AdminBackend extends Controller
             }
             else
             {
-                $column = $value;
+                $column = $key;
                 $types[] = TypeToInput::make(SQL::table($this->table)->getColumnType($column));
             }
 
