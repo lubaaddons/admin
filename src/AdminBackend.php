@@ -10,6 +10,7 @@ use Form;
 use Input;
 use URL;
 use Auth;
+use Header;
 use Luba\Framework\Paginator;
 use Luba\Excel;
 use Flo\MySQL\Collection;
@@ -82,7 +83,7 @@ class AdminBackend extends Controller
 	 */
     public function css()
     {
-        header('Content-type: text/css');
+        Header::contentType('text/css');
         return new View('admincss', [], __DIR__.'/views/');
     }
 
@@ -222,13 +223,16 @@ class AdminBackend extends Controller
             {
             	$listings = $config['listings'];
             	$list = $listings();
-            	
+
             	if ($list instanceof Collection)
             		$list = $list->toArray();
             	else
             		$list = (array) $list;
 
-            	$form->select($name, $list, NULL, $attributes)->label(isset($config['name']) ? $config['name'] : ucfirst($name));
+            	if (isset($config['multiple']) && $config['multiple'])
+            		$form->select($name, $list, NULL, $attributes, ['multiple' => true])->label(isset($config['name']) ? $config['name'] : ucfirst($name));
+            	else
+            		$form->select($name, $list, NULL, $attributes)->label(isset($config['name']) ? $config['name'] : ucfirst($name));
             }
             elseif ($field == 'password')
             {
