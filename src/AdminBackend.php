@@ -10,7 +10,7 @@ use Form;
 use Input;
 use URL;
 use Auth;
-use Header;
+use Luba\Helpers\Header;
 use Luba\Framework\Paginator;
 use Luba\Excel;
 use Flo\MySQL\Collection;
@@ -230,9 +230,9 @@ class AdminBackend extends Controller
             		$list = (array) $list;
 
             	if (isset($config['multiple']) && $config['multiple'])
-            		$form->select($name, $list, NULL, $attributes, ['multiple' => true])->label(isset($config['name']) ? $config['name'] : ucfirst($name));
-            	else
-            		$form->select($name, $list, NULL, $attributes)->label(isset($config['name']) ? $config['name'] : ucfirst($name));
+                    $attributes["multiple"] = true;
+
+        		$form->select($name, $list, NULL, $attributes)->label(isset($config['name']) ? $config['name'] : ucfirst($name));
             }
             elseif ($field == 'password')
             {
@@ -310,6 +310,9 @@ class AdminBackend extends Controller
             }
         }
 
+        //Get n-m-relations, relations data
+        //$data["relations"] = ...
+
         return $data;
     }
 
@@ -321,7 +324,11 @@ class AdminBackend extends Controller
      */
     public function update($id)
     {
-        SQL::table($this->table)->update($id, $this->getInputData());
+        $data = $this->getInputData();
+        SQL::table($this->table)->update($id, $data);
+
+        //Save relations
+
         Redirect::to(url("admin/{$this->table}"));
     }
 
