@@ -135,11 +135,27 @@ class AdminBackend extends Controller
 	{
 		$item = SQL::table($this->table)->find($id);
         $formfields = $this->getFormFields();
-		$form = $this->itemform($formfields, $item->toArray());
+        $data = $this->fillValues($item);
+		$form = $this->itemform($formfields, $data);
 		$form->action(url("admin/{$this->table}/update/$id"));
 
 		return new View('edit', ['editfields' => $formfields, 'item' => $item, 'form' => $form], __DIR__.'/views/');
 	}
+
+    public function fillValues($item) {
+        $data = $item->toArray();
+        $editfields = $this->getEditFields();
+
+        foreach ($editfields as $key => $value)
+        {
+            if(isset($value['getvalues']))
+            {
+                $data[$key] = $value['getvalues']($item);
+            }
+        }
+
+        return $data;
+    }
 
 	/**
 	 * Get the Edit / Add form fields
@@ -148,12 +164,7 @@ class AdminBackend extends Controller
 	 */
     public function getFormFields()
     {
-        $tableconf = $this->getTableConfig();
-
-        if (!isset($tableconf['editable']))
-            throw new AdminException('No editable fields are defined!');
-
-        $editfields = $tableconf['editable'];
+        $editfields = $this->getEditFields();
         $columns = [];
         $types = [];
 
@@ -179,6 +190,15 @@ class AdminBackend extends Controller
         return $formfields;
     }
 
+    public function getEditFields()
+    {
+        $tableconf = $this->getTableConfig();
+        if (!isset($tableconf['editable']))
+            throw new AdminException('No editable fields are defined!');
+        $editfields = $tableconf['editable'];
+        return $editfields;
+    }
+
     /**
      * Get the config for an edit field
      *
@@ -187,8 +207,7 @@ class AdminBackend extends Controller
      */
     public function getEditConfig($field)
     {
-        $tableconf = $this->getTableConfig();
-        $editfields = $tableconf['editable'];
+        $editfields = $this->getEditFields();
 
         return isset($editfields[$field]) ? $editfields[$field] : [];
     }
@@ -256,8 +275,7 @@ class AdminBackend extends Controller
 	 */
     protected function getFileFields()
     {
-        $tableconf = $this->getTableConfig();
-        $editfields = $tableconf['editable'];
+        $editfields = $this->getEditFields();
         $filefields = [];
 
         foreach ($editfields as $key => $value)
@@ -325,6 +343,17 @@ class AdminBackend extends Controller
     public function update($id)
     {
         $data = $this->getInputData();
+        // dd($data);
+        $editfields = $this->getEditFields();
+        $specialfields = [];
+        foreach ($editfields as $key => $value)
+        {
+            if(isset($value['setvalues']))
+            {
+                $value['setvalues']($id, $data[$key]); //Manual save
+                unset($data[$key]);
+            }
+        }
         SQL::table($this->table)->update($id, $data);
 
         //Save relations
@@ -339,7 +368,19 @@ class AdminBackend extends Controller
      */
 	public function store()
 	{
-		SQL::table($this->table)->insert($this->getInputData());
+        $data = $this->getInputData();
+
+		SQL::table($this->table)->insert($data);
+        $editfields = $this->getEditFields();
+
+        foreach ($editfields as $key => $value)
+        {
+            if(isset($value['setvalues']))
+            {
+                $data[$key] = $value['setvalues']($item);
+            }
+        }
+
 		Redirect::to(url("admin/{$this->table}"));
 	}
 
