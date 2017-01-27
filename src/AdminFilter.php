@@ -36,7 +36,7 @@ class AdminFilter
 			$name = $filter['name'];
 			$col = $filter['col'];
 
-			$str[] = "<div class=\"filterfield\">";
+			$str[] = "<div class=\"field\">";
 
 			$input = Input::get($col) ?: NULL;
 

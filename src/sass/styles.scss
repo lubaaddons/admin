@@ -1,0 +1,29 @@
+@import "include_media";
+@import "variables";
+@import "functions";
+@import "header";
+@import "reset";
+@import "typography";
+@import "forms";
+@import "table";
+@import "~selectize/dist/css/selectize.css";
+
+main {
+    padding:20px 20px 60px;
+}
+
+.panel {
+    border:1px solid $lightgrey;
+
+    .panel_header {
+        background-color:$lightgrey;
+        padding:6px 12px;
+        position:relative;
+
+        .panel_header_actions {
+            position:absolute;
+            bottom:12px;
+            right:0px;
+        }
+    }
+}

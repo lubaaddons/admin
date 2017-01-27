@@ -1,199 +1,102 @@
-<!doctype html>
-
-<html>
-
-	<head>
-		<title>Admin - $$tablename</title>
-		<link href='https://fonts.googleapis.com/css?family=Open+Sans:400,600,700,800,300' rel='stylesheet' type='text/css'>
-		<script src="https://code.jquery.com/jquery-3.1.0.min.js"></script>
-        <script src="//cdn.ckeditor.com/4.5.10/standard/ckeditor.js"></script>
-        <script src="//cdn.ckeditor.com/4.5.10/standard/adapters/jquery.js"></script>
-        <script src="//cdnjs.cloudflare.com/ajax/libs/selectize.js/0.12.4/js/standalone/selectize.min.js"></script>
-        <link href="//cdnjs.cloudflare.com/ajax/libs/selectize.js/0.12.4/css/selectize.min.css" rel="stylesheet" type="text/css">
-        <link href="<< url('admin/css') >>" rel="stylesheet" type="text/css">
-	</head>
-
-	<body>
-
-		<header>
-
-			<nav>
-
-				<ul>
-
-					<li>
-						<a href="<< url('/') >>">Home</a>
-					</li>
-
-					<foreach $nav as $name => $url>
-
-						<if URL::withoutParams() == $url>
-						<li class="active">
-						<else>
-						<li>
-						</if>
-							<a href="$$url">$$name</a>
-						</li>
-
-					</foreach>
-
-				</ul>
-
-				<a href="<< url($logoutlink) >>" class="logout">
-					Logout
-				</a>
-
-			</nav>
-
-		</header>
+<parent::master>
+<fill::body>
 
 		<main>
-
-			<if $adminfilter>
-				<!--<a href="#" class="adminfilter_link">Filter</a>-->
-				<form class="adminfilter" method="get" action="<< URL::full() >>">
-					$$adminfilter
-					<div class="filterfield">
-					<input class="button" type="submit" value="Search">
-					</div>
-                    <div class="filterfield">
-                    <a class="button" href="?">Reset filter</a>
+            <section class="panel">
+                <header class="panel_header">
+                    <h1>$$title</h1>
+                    <div class="panel_header_actions">
+                        <a href="<< url('admin/'.$tablename.'/create') >>" data-behaviour="ajax" class="button button--primary button--add">Add</a>
                     </div>
-				</form>
-			</if>
+                </header>
 
-			<a href="<< url('admin/'.$tablename.'/create') >>" data-behaviour="ajax" class="add">Add</a>
+    			<if $adminfilter>
+    				<!--<a href="#" class="adminfilter_link">Filter</a>-->
+    				<form class="adminfilter" method="get" action="<< URL::full() >>">
+    					$$adminfilter
+    					<div class="actions">
+    					<input class="button button--primary" type="submit" value="Search">
+                        <a class="button" href="?">Reset filter</a>
+    					</div>
+    				</form>
+    			</if>
+    			<table class="table">
+    				<thead>
+    					<tr>
+    						<foreach $tableconf['displayed'] as $name>
+    							<if is_array($name)>
+    								<th> << $name['name'] >> </th>
+    							<else>
+    								<th>$$name</th>
+    							</if>
+    						</foreach>
+    						<th></th>
+    						<th></th>
+    					<tr>
+    				</thead>
+    				<body>
+    					<foreach $items as $item>
+    						<tr>
 
-			<table>
-				<thead>
-					<tr>
-						<foreach $tableconf['displayed'] as $name>
-							<if is_array($name)>
-								<th> << $name['name'] >> </th>
-							<else>
-								<th>$$name</th>
-							</if>
-						</foreach>
-						<th></th>
-						<th></th>
-					<tr>
-				</thead>
-				<body>
-					<foreach $items as $item>
-						<tr>
+    							<foreach $tableconf['displayed'] as $col => $name>
+        								<if is_array($name)>
+                                            <td
+                                                <if isset($name['nowrap'])>
+                                                class="nowrap"</if>
+                                            >
+        									<if $name['type'] == 'image'>
+        										<a target="_blank" href="<< url($item->$col) >>">
+        											<php>
+        											$tempname = str_random(10);
+                                                                                                    try{
+        											Luba\Image::make(public_path($item->$col))->thumbnail(100)->save(public_path('tempimages/'.$tempname));
+        											}catch(Exception $exp) {}
+                                                                                                    </php>
+        											<img src="<< url('tempimages/'.$tempname) >>">
+        										</a>
+        									</if>
+                                            <if $name['type'] == 'text'>
+                                                <php>
+                                                    if(isset($name['col']))
+                                                        $col = $name['col'];
+                                                    $value = $item->$col;
 
-							<foreach $tableconf['displayed'] as $col => $name>
-    								<if is_array($name)>
-                                        <td
-                                            <if isset($name['nowrap'])>
-                                            class="nowrap"</if>
-                                        >
-    									<if $name['type'] == 'image'>
-    										<a target="_blank" href="<< url($item->$col) >>">
-    											<php>
-    											$tempname = str_random(10);
-                                                                                                try{
-    											Luba\Image::make(public_path($item->$col))->thumbnail(100)->save(public_path('tempimages/'.$tempname));
-    											}catch(Exception $exp) {}
-                                                                                                </php>
-    											<img src="<< url('tempimages/'.$tempname) >>">
-    										</a>
-    									</if>
-                                        <if $name['type'] == 'text'>
-                                            <php>
-                                                if(isset($name['col']))
-                                                    $col = $name['col'];
-                                                $value = $item->$col;
+                                                    if(isset($name['formatter']))
+                                                        $value = $name['formatter']($value);
 
-                                                if(isset($name['formatter']))
-                                                    $value = $name['formatter']($value);
+                                                    echo $value;
+                                                </php>
+                                            </if>
+                                            </td>
+        								<else>
+        									<td><< $item->$col >></td>
+        								</if>
+    							</foreach>
+    							<td><a href="<< url('admin/'.$tablename.'/edit/'.$item->id) >>"  data-behaviour="ajax" class="row_button">Edit</a></td>
+    							<td><a href="<< url('admin/'.$tablename.'/delete/'.$item->id) >>"  data-behaviour="ajax" class="row_button">Delete</a></td>
+    						</tr>
+    					</foreach>
+    				</tbody>
 
-                                                echo $value;
-                                            </php>
-                                        </if>
-                                        </td>
-    								<else>
-    									<td><< $item->$col >></td>
-    								</if>
-							</foreach>
-							<td class="edit"><a href="<< url('admin/'.$tablename.'/edit/'.$item->id) >>"  data-behaviour="ajax" class="edit_link">Edit</a></td>
-							<td class="delete"><a href="<< url('admin/'.$tablename.'/delete/'.$item->id) >>"  data-behaviour="ajax" class="delete_link">Delete</a></td>
-						</tr>
-					</foreach>
-				</tbody>
+    			</table>
 
-			</table>
+    			$$pagination
 
-			$$pagination
+                <if $exportlink>
+                <p><a href="$$exportlink" target="_blank">Export</a></p>
+                </if>
 
-            <if $exportlink>
-            <p><a href="$$exportlink" target="_blank">Export</a></p>
-            </if>
+                <if $importlink>
+                <p><a href="$$importlink">Import</p>
+                </if>
 
-            <if $importlink>
-            <p><a href="$$importlink">Import</p>
-            </if>
-
-            <if !empty($otherlinks)>
-	            <foreach $otherlinks as $link>
-	            	$$link
-	            </foreach>
-            </if>
-
+                <if !empty($otherlinks)>
+    	            <foreach $otherlinks as $link>
+    	            	$$link
+    	            </foreach>
+                </if>
+            </section>
 		</main>
 
-	</body>
 
-	<script>
-    function hideoverlay()
-    {
-        $('.overlay').fadeOut(200, function(){
-            $(this).remove();
-        });
-        $('.ajax_container').fadeOut(200, function(){
-            $(this).remove();
-        });
-    }
-
-	$(document).ready(function(){
-        $('body').on('click', '[data-behaviour="close"]', function(e) {
-            e.preventDefault();
-            hideoverlay();
-        });
-		$('body').on('click', 'a[data-behaviour="ajax"]', function(e){
-			e.preventDefault();
-			ajaxRequest($(this).attr('href'));
-		});
-
-		function ajaxRequest(url)
-		{
-			$.ajax({
-				url: url
-			}).done(function(data){
-				overlay(data);
-			});
-		}
-		function overlay(content)
-		{
-			$('body').append('<div class="overlay" data-behaviour="close"></div>');
-			$('.overlay').hide().fadeIn(200);
-			$('body').append('<div class="ajax_container"><div class="subcontainer">' + content + '</div></div>');
-			$('.ajax_container').hide().fadeIn(200);
-            $('.ajax_container .html').ckeditor(function() {},{'toolbar':'basic'});
-            $('.ajax_container select').selectize();
-		}
-
-		<if !Input::get()>
-		// $('.adminfilter').hide();
-		</if>
-
-		$('.adminfilter_link').click(function(e){
-			e.preventDefault();
-			$('.adminfilter').slideToggle();
-		})
-	});
-
-	</script>
-
-
-</html>
+</fill::body>

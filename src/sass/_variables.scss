@@ -1,0 +1,19 @@
+$darkgrey: #444;
+$medgrey: #999;
+$lightgrey: #f0f0f0;
+$white:#FFFFFF;
+$white_trans:rgba($white, 0.8);
+$yellow:#fef101;
+$blue:#1176A2;
+$blue_trans:rgba($blue, 0.3);
+$blue_light:#3390b7;
+
+$maxwidth: 783px;
+$maxheader: 1170px;
+
+$breakpoints: (
+    'smartphone': 320px,
+    'medium': 640px,
+    'desktop': 1000px,
+    'max': $maxwidth
+);

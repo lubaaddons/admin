@@ -91,10 +91,12 @@ class AdminBackend extends Controller
     {
         $filename = __DIR__.'/assets/'.implode("/", func_get_args());
         if(file_exists($filename)){
-            header('Content-Type: ' . mime_content_type($filename));
+            $ext = pathinfo($filename, PATHINFO_EXTENSION);
 
-            //Use Content-Disposition: attachment to specify the filename
-            // header('Content-Disposition: attachment; filename='.basename($filename));
+            $mimes = new \Mimey\MimeTypes;
+            $mimetype = $mimes->getMimeType($ext);
+
+            header('Content-Type: ' . $mimetype);
 
             //No cache
             // header('Expires: 0');
@@ -535,6 +537,8 @@ class AdminBackend extends Controller
             	$filters($adminfilter = new AdminFilter);
             }
 
+            $title = isset($table['menuname']) ? $table['menuname'] : ucfirst($name);
+
             // Return view
 			return new View('index', [
 
@@ -544,6 +548,7 @@ class AdminBackend extends Controller
 				'tableconf'		=> $table,
 				'nav'			=> $this->config->getNav(),
 				'tablename'		=> $tablename,
+                'title'         => $title,
 				'exportlink'	=> $exportlink,
 				'importlink'	=> $importlink,
 				'otherlinks'	=> $otherlinks,

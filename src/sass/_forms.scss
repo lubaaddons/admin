@@ -1,0 +1,51 @@
+form {
+    .field, .actions {
+        @extend .clearfix;
+        padding:6px 12px;
+        label {
+            display:block;
+            width:30%;
+            padding:6px 12px;
+            float:left;
+        }
+        input, textarea, select, .selectize-control {
+            width:70%;
+            float:left;
+        }
+        input, textarea, select {
+            padding:6px 12px;
+        }
+        input[type="submit"], input[type="checkbox"], input[type="radio"], button {
+            width:auto;
+        }
+    }
+}
+
+input[type="submit"], button, .button {
+    display:inline-block;
+    height:36px;
+    padding:9px 18px;
+    background-color:$medgrey;
+    border:1px solid $medgrey;
+    color:$white;
+    text-decoration:none;
+    margin-right:1em;
+    cursor:pointer;
+    border-radius:2px;
+
+    &:hover {
+        background-color:$white;
+        color:$medgrey;
+    }
+
+    &.button--primary {
+        background-color:$blue;
+        border:1px solid $blue;
+
+        &:hover {
+            background-color:$white;
+            color:$blue;
+        }
+
+    }
+}
