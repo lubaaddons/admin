@@ -54,7 +54,8 @@
     .adminfilter .filterfield label {
         display:block;
     }
-    .adminfilter .filterfield input[type="submit"] {
+    .adminfilter .filterfield input[type="submit"], .button {
+        display:inline-block;
         margin-top:22px;
     }
     .adminfilter .filterfield input, .adminfilter .filterfield select {
@@ -76,6 +77,9 @@
     }
     td {
         border-bottom:1px solid lightgrey;
+    }
+    .nowrap {
+        white-space:nowrap;
     }
     th {
         border-bottom: 2px solid grey;
@@ -133,13 +137,18 @@
     .formfield label {
         margin-bottom:10px;
         display:inline-block;
+        vertical-align:top;
         width:200px;
     }
-    input, textarea {
+    .formfield input, .formfield textarea {
         width:250px;
         border:1px solid #ccc;
     }
-    textarea {
+    .formfield .selectize-control {
+        width:250px;
+        display:inline-block;
+    }
+    .formfield textarea {
         height:200px;
     }
     .cancel_edit:hover {

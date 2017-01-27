@@ -547,7 +547,7 @@ class AdminBackend extends Controller
 
 		$displayed = isset($tableconf['displayed']) ? $tableconf['displayed'] : '*';
 
-		$primarykey = isset($tableconf['primarykey']) ? $tableconf['primarykey'] : 'id';
+		$primarykey = isset($tableconf['primarykey']) ? $tableconf['primarykey'] : $tablename.'.id';
 
 		if ((!isset($displayed[$primarykey]) or array_search($primarykey, $displayed) === false) && array_search('*', $displayed) === false)
 			$displayed = [$primarykey => mb_strtoupper($primarykey)] + $displayed;
@@ -556,8 +556,13 @@ class AdminBackend extends Controller
 		{
 			if (is_int($col))
 				$select[] = $title;
-			else
-				$select[] = "$col";
+			else {
+                if(is_array($title) && isset($title["col"])) {
+                    $select[] = "$col as $title[col]";
+                } else {
+                    $select[] = "$col";
+                }
+            }
 		}
 
 		$items = SQL::table($tablename)->select(implode(', ', $select));
@@ -577,12 +582,12 @@ class AdminBackend extends Controller
 			$filters($adminfilter = new AdminFilter);
 			$items = $adminfilter->filter($items);
 		}
-
+        // dd($items->toSql());
+        // dd($items->get()->first());
 		if ($returnquery)
 			return $items;
 
 		$items = $items->get();
-
 		return $items;
 	}
 

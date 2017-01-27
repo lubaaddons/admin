@@ -8,6 +8,8 @@
 		<script src="https://code.jquery.com/jquery-3.1.0.min.js"></script>
         <script src="//cdn.ckeditor.com/4.5.10/standard/ckeditor.js"></script>
         <script src="//cdn.ckeditor.com/4.5.10/standard/adapters/jquery.js"></script>
+        <script src="//cdnjs.cloudflare.com/ajax/libs/selectize.js/0.12.4/js/standalone/selectize.min.js"></script>
+        <link href="//cdnjs.cloudflare.com/ajax/libs/selectize.js/0.12.4/css/selectize.min.css" rel="stylesheet" type="text/css">
         <link href="<< url('admin/css') >>" rel="stylesheet" type="text/css">
 	</head>
 
@@ -48,12 +50,15 @@
 		<main>
 
 			<if $adminfilter>
-				<a href="#" class="adminfilter_link">Filter</a>
+				<!--<a href="#" class="adminfilter_link">Filter</a>-->
 				<form class="adminfilter" method="get" action="<< URL::full() >>">
 					$$adminfilter
 					<div class="filterfield">
-					<input type="submit" value="Search">
+					<input class="button" type="submit" value="Search">
 					</div>
+                    <div class="filterfield">
+                    <a class="button" href="?">Reset filter</a>
+                    </div>
 				</form>
 			</if>
 
@@ -78,23 +83,38 @@
 						<tr>
 
 							<foreach $tableconf['displayed'] as $col => $name>
-								<if is_array($name)>
-									<if $name['type'] == 'image'>
-										<td>
-											<a target="_blank" href="<< url($item->$col) >>">
-												<php>
-												$tempname = str_random(10);
+    								<if is_array($name)>
+                                        <td
+                                            <if isset($name['nowrap'])>
+                                            class="nowrap"</if>
+                                        >
+    									<if $name['type'] == 'image'>
+    										<a target="_blank" href="<< url($item->$col) >>">
+    											<php>
+    											$tempname = str_random(10);
                                                                                                 try{
-												Luba\Image::make(public_path($item->$col))->thumbnail(100)->save(public_path('tempimages/'.$tempname));
-												}catch(Exception $exp) {}
+    											Luba\Image::make(public_path($item->$col))->thumbnail(100)->save(public_path('tempimages/'.$tempname));
+    											}catch(Exception $exp) {}
                                                                                                 </php>
-												<img src="<< url('tempimages/'.$tempname) >>">
-											</a>
-										</td>
-									</if>
-								<else>
-									<td><< $item->$col >></td>
-								</if>
+    											<img src="<< url('tempimages/'.$tempname) >>">
+    										</a>
+    									</if>
+                                        <if $name['type'] == 'text'>
+                                            <php>
+                                                if(isset($name['col']))
+                                                    $col = $name['col'];
+                                                $value = $item->$col;
+
+                                                if(isset($name['formatter']))
+                                                    $value = $name['formatter']($value);
+
+                                                echo $value;
+                                            </php>
+                                        </if>
+                                        </td>
+    								<else>
+    									<td><< $item->$col >></td>
+    								</if>
 							</foreach>
 							<td class="edit"><a href="<< url('admin/'.$tablename.'/edit/'.$item->id) >>"  data-behaviour="ajax" class="edit_link">Edit</a></td>
 							<td class="delete"><a href="<< url('admin/'.$tablename.'/delete/'.$item->id) >>"  data-behaviour="ajax" class="delete_link">Delete</a></td>
@@ -160,10 +180,11 @@
 			$('body').append('<div class="ajax_container"><div class="subcontainer">' + content + '</div></div>');
 			$('.ajax_container').hide().fadeIn(200);
             $('.ajax_container .html').ckeditor(function() {},{'toolbar':'basic'});
+            $('.ajax_container select').selectize();
 		}
 
 		<if !Input::get()>
-		$('.adminfilter').hide();
+		// $('.adminfilter').hide();
 		</if>
 
 		$('.adminfilter_link').click(function(e){
