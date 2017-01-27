@@ -87,6 +87,29 @@ class AdminBackend extends Controller
         return new View('admincss', [], __DIR__.'/views/');
     }
 
+    public function assets()
+    {
+        $filename = __DIR__.'/assets/'.implode("/", func_get_args());
+        if(file_exists($filename)){
+            header('Content-Type: ' . mime_content_type($filename));
+
+            //Use Content-Disposition: attachment to specify the filename
+            // header('Content-Disposition: attachment; filename='.basename($filename));
+
+            //No cache
+            // header('Expires: 0');
+            // header('Cache-Control: must-revalidate');
+            // header('Pragma: public');
+            //Define file size
+            header('Content-Length: ' . filesize($filename));
+
+            ob_clean();
+            flush();
+            readfile($filename);
+            exit;
+        }
+    }
+
     /**
      * Get the dashboard page
      *
