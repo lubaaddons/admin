@@ -143,8 +143,7 @@ class AdminBackend extends Controller
 	 */
 	public function create()
 	{
-        $formfields = $this->getFormFields();
-		$form = $this->itemform($formfields);
+		$form = $this->itemform();
 		$form->action(url("admin/{$this->table}/store"));
 
 		return new View('edit', ['editfields' => $formfields, 'form' => $form], __DIR__.'/views/');
@@ -159,12 +158,11 @@ class AdminBackend extends Controller
 	public function edit($id)
 	{
 		$item = SQL::table($this->table)->find($id);
-        $formfields = $this->getFormFields();
         $data = $this->fillValues($item);
-		$form = $this->itemform($formfields, $data);
+		$form = $this->itemform($data);
 		$form->action(url("admin/{$this->table}/update/$id"));
 
-		return new View('edit', ['editfields' => $formfields, 'item' => $item, 'form' => $form], __DIR__.'/views/');
+		return new View('edit', ['item' => $item, 'form' => $form], __DIR__.'/views/');
 	}
 
     public function fillValues($item) {
@@ -187,32 +185,18 @@ class AdminBackend extends Controller
 	 *
 	 * @return array
 	 */
-    public function getFormFields()
+    public function getFieldType($key, $formdef)
     {
-        $editfields = $this->getEditFields();
-        $columns = [];
-        $types = [];
-
-        foreach ($editfields as $key => $value)
+        if(is_array($formdef))
         {
-            if(is_array($value))
-            {
-                //Detail config
-                $column = $key;
-                $types[] = $value['type'];
-            }
-            else
-            {
-                $column = $key;
-                $types[] = TypeToInput::make(SQL::table($this->table)->getColumnType($column));
-            }
-
-            $columns[] = $column;
+            $type = $formdef['type'];
+        }
+        else
+        {
+            $type = TypeToInput::make(SQL::table($this->table)->getColumnType($key));
         }
 
-        $formfields = array_combine($columns, $types);
-
-        return $formfields;
+        return $type;
     }
 
     public function getEditFields()
@@ -244,7 +228,7 @@ class AdminBackend extends Controller
      * @param array $bindings
      * @return Form
      */
-	public function itemform($fields, $bindings = false)
+	public function itemform($bindings = false)
 	{
 		$form = new Form;
         $form->templates(__DIR__."/views/form/");
@@ -252,19 +236,23 @@ class AdminBackend extends Controller
 		if ($bindings)
 			$form->bind($bindings);
 
-		foreach ($fields as $name => $field)
+        $editfields = $this->getEditFields();
+
+        foreach ($editfields as $name => $formdef)
 		{
+            $fieldtype = $this->getFieldType($name, $formdef);
             $attributes = [];
-            $config = $this->getEditConfig($name);
+            $config = is_array($formdef)?$formdef:NULL;
+            $label = $config?$config['name']:$formdef;
 
             if($config && isset($config['attributes']))
                 $attributes = $config['attributes'];
 
-            if($field == "file")
+            if($fieldtype == "file")
             {
                 $form->$field($name, $attributes)->label(ucfirst($name));
             }
-            elseif ($field == "select")
+            elseif ($fieldtype == "select")
             {
             	$listings = $config['listings'];
             	$list = $listings();
@@ -277,15 +265,15 @@ class AdminBackend extends Controller
             	if (isset($config['multiple']) && $config['multiple'])
                     $attributes["multiple"] = true;
 
-        		$form->select($name, $list, NULL, $attributes)->label(isset($config['name']) ? $config['name'] : ucfirst($name));
+        		$form->select($name, $list, NULL, $attributes)->label($label);
             }
-            elseif ($field == 'password')
+            elseif ($fieldtype == 'password')
             {
-            	$form->password($name.'__password', $attributes)->label(ucfirst($name));
+            	$form->password($name.'__password', $attributes)->label($label);
             }
             else
             {
-                $form->$field($name, null, $attributes)->label(ucfirst($name));
+                $form->$fieldtype($name, null, $attributes)->label($label);
             }
 		}
 

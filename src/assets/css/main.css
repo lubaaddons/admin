@@ -3743,8 +3743,11 @@ form .fieldrow, form .actions {
   form .fieldrow input, form .fieldrow textarea, form .fieldrow select, form .fieldrow .selectize-control, form .actions input, form .actions textarea, form .actions select, form .actions .selectize-control {
     width: 70%;
     float: left; }
+  form .fieldrow .selectize-input, form .actions .selectize-input {
+    border-radius: 0; }
   form .fieldrow input, form .fieldrow textarea, form .fieldrow select, form .actions input, form .actions textarea, form .actions select {
-    padding: 6px 12px; }
+    padding: 6px 12px;
+    border: 1px solid #e0e0e0; }
   form .fieldrow textarea, form .actions textarea {
     height: 80px; }
   form .fieldrow input[type="submit"], form .fieldrow input[type="checkbox"], form .fieldrow input[type="radio"], form .fieldrow button, form .actions input[type="submit"], form .actions input[type="checkbox"], form .actions input[type="radio"], form .actions button {
@@ -3808,7 +3811,8 @@ input[type="submit"], button, .button, .modal .modal_close {
   color: #FFFFFF;
   text-decoration: none;
   padding: 4px;
-  border-radius: 4px; }
+  border-radius: 4px;
+  white-space: nowrap; }
 
 .pagination {
   border-bottom: 1px solid #e0e0e0; }
