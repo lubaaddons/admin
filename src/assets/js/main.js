@@ -1879,59 +1879,58 @@
 
 	"use strict";
 	
-	var _jquery = __webpack_require__(8);
+	var _jquery = __webpack_require__(6);
 	
 	var _jquery2 = _interopRequireDefault(_jquery);
 	
-	var _selectize_clear = __webpack_require__(9);
+	var _selectize_clear = __webpack_require__(7);
 	
 	var _selectize_clear2 = _interopRequireDefault(_selectize_clear);
 	
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 	
-	__webpack_require__(6);
+	__webpack_require__(11);
+	
+	function hideoverlay() {
+	    (0, _jquery2.default)('.overlay').fadeOut(200, function () {
+	        (0, _jquery2.default)(this).remove();
+	    });
+	    (0, _jquery2.default)('.modal').fadeOut(200, function () {
+	        (0, _jquery2.default)(this).remove();
+	    });
+	}
 	
 	(0, _jquery2.default)(function () {
 	    (0, _jquery2.default)('.adminfilter select').selectize();
+	
+	    (0, _jquery2.default)('body').on('click', '[data-behaviour="close"]', function (e) {
+	        e.preventDefault();
+	        hideoverlay();
+	    });
+	    (0, _jquery2.default)('body').on('click', 'a[data-behaviour="ajax"]', function (e) {
+	        e.preventDefault();
+	        ajaxRequest((0, _jquery2.default)(this).attr('href'));
+	    });
+	
+	    // $('a[data-behaviour="ajax"]').first().click();
+	
+	    function ajaxRequest(url) {
+	        _jquery2.default.ajax({
+	            url: url
+	        }).done(function (data) {
+	            overlay(data);
+	        });
+	    }
+	    function overlay(content) {
+	        (0, _jquery2.default)('body').append('<div class="overlay" data-behaviour="close"></div>');
+	        (0, _jquery2.default)('.overlay').hide().fadeIn(200);
+	        (0, _jquery2.default)('body').append('<div class="modal">' + '<a class="modal_close" href="#" data-behaviour="close"><i class="ion-close-round"></i></a>' + '<div class="modal_content">' + content + '</div>' + '</div>');
+	        (0, _jquery2.default)('.modal').hide().fadeIn(200);
+	        // $('.modal .html').ckeditor(function() {},{'toolbar':'basic'});
+	        (0, _jquery2.default)('.modal select').selectize();
+	    }
 	});
-	// <script>
-	// function hideoverlay()
-	// {
-	//     $('.overlay').fadeOut(200, function(){
-	//         $(this).remove();
-	//     });
-	//     $('.ajax_container').fadeOut(200, function(){
-	//         $(this).remove();
-	//     });
-	// }
-	
 	// $(document).ready(function(){
-	//     $('body').on('click', '[data-behaviour="close"]', function(e) {
-	//         e.preventDefault();
-	//         hideoverlay();
-	//     });
-	//     $('body').on('click', 'a[data-behaviour="ajax"]', function(e){
-	//         e.preventDefault();
-	//         ajaxRequest($(this).attr('href'));
-	//     });
-	
-	//     function ajaxRequest(url)
-	//     {
-	//         $.ajax({
-	//             url: url
-	//         }).done(function(data){
-	//             overlay(data);
-	//         });
-	//     }
-	//     function overlay(content)
-	//     {
-	//         $('body').append('<div class="overlay" data-behaviour="close"></div>');
-	//         $('.overlay').hide().fadeIn(200);
-	//         $('body').append('<div class="ajax_container"><div class="subcontainer">' + content + '</div></div>');
-	//         $('.ajax_container').hide().fadeIn(200);
-	//         $('.ajax_container .html').ckeditor(function() {},{'toolbar':'basic'});
-	//         $('.ajax_container select').selectize();
-	//     }
 	
 	//     <if !Input::get()>
 	//     // $('.adminfilter').hide();
@@ -1942,18 +1941,9 @@
 	//         $('.adminfilter').slideToggle();
 	//     })
 	// });
-	
-	// </script>
 
 /***/ },
 /* 6 */
-/***/ function(module, exports) {
-
-	// removed by extract-text-webpack-plugin
-
-/***/ },
-/* 7 */,
-/* 8 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/*!
@@ -12179,7 +12169,7 @@
 
 
 /***/ },
-/* 9 */
+/* 7 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -12188,11 +12178,11 @@
 	    value: true
 	});
 	
-	var _jquery = __webpack_require__(8);
+	var _jquery = __webpack_require__(6);
 	
 	var _jquery2 = _interopRequireDefault(_jquery);
 	
-	var _selectize = __webpack_require__(10);
+	var _selectize = __webpack_require__(8);
 	
 	var _selectize2 = _interopRequireDefault(_selectize);
 	
@@ -12229,7 +12219,7 @@
 	exports.default = _selectize2.default;
 
 /***/ },
-/* 10 */
+/* 8 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/**
@@ -12253,7 +12243,7 @@
 	
 	(function(root, factory) {
 		if (true) {
-			!(__WEBPACK_AMD_DEFINE_ARRAY__ = [__webpack_require__(8),__webpack_require__(11),__webpack_require__(12)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory), __WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ? (__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__), __WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
+			!(__WEBPACK_AMD_DEFINE_ARRAY__ = [__webpack_require__(6),__webpack_require__(9),__webpack_require__(10)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory), __WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ? (__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__), __WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
 		} else if (typeof exports === 'object') {
 			module.exports = factory(require('jquery'), require('sifter'), require('microplugin'));
 		} else {
@@ -15427,7 +15417,7 @@
 	}));
 
 /***/ },
-/* 11 */
+/* 9 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_RESULT__;/**
@@ -15931,7 +15921,7 @@
 
 
 /***/ },
-/* 12 */
+/* 10 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_RESULT__;/**
@@ -16069,6 +16059,12 @@
 	
 		return MicroPlugin;
 	}));
+
+/***/ },
+/* 11 */
+/***/ function(module, exports) {
+
+	// removed by extract-text-webpack-plugin
 
 /***/ }
 /******/ ]);

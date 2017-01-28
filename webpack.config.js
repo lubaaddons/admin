@@ -25,11 +25,11 @@ module.exports = {
                 // loader: ExtractTextPlugin.extract('style-loader', 'css-loader?sourceMap!sass-loader?outputStyle=expanded&sourceMap=true&sourceMapContents=true', {'publicPath':'../'})
             },
             {
-                test: /\.jpg|\.png|\.svg$/,
+                test: /\.jpg|\.png|\.svg(\?[\-\.=a-z0-9]+)?$/,
                 loader: "file-loader?name=images/[name].[ext]"
             },
             {
-                test   : /\.(ttf|eot|woff(2)?)(\?[a-z0-9]+)?$/,
+                test   : /\.(ttf|eot|woff(2)?)(\?[\-\.=a-z0-9]+)?$/,
                 loader: "file-loader?name=fonts/[name].[ext]&context=./something",
             },
             {

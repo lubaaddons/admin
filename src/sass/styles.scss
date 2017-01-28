@@ -1,12 +1,19 @@
 @import "include_media";
 @import "variables";
+
+$ionicons-font-path: "~ionicons-npm/fonts";
+@import "~ionicons-npm/scss/ionicons.scss";
+
 @import "functions";
 @import "header";
 @import "reset";
 @import "typography";
+
+@import "~selectize/dist/css/selectize.css";
 @import "forms";
 @import "table";
-@import "~selectize/dist/css/selectize.css";
+@import "modal";
+
 
 main {
     padding:20px 20px 60px;

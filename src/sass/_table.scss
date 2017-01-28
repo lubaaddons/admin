@@ -2,23 +2,13 @@
     @extend .clearfix;
     border-top:1px solid $lightgrey;
     border-bottom:1px solid $lightgrey;
-    .field, .actions {
-        width:100%;
-        padding:8px 12px;
 
-        @include media(">medium") {
-            width:50%;
-            float:left;
-        }
+    @extend .form--horizontal;
+}
 
-        @include media(">desktop") {
-            width:350px;
-            float:left;
-        }
-    }
-    // .actions {
-    //     clear:left;
-    // }
+.table-container {
+    max-width:100%;
+    overflow:auto;
 }
 
 .table {
@@ -38,6 +28,8 @@
 }
 
 .row_button {
+    display:inline-block;
+    margin-bottom:4px;
     background-color:$medgrey;
     color:$white;
     text-decoration:none;
