@@ -1,0 +1,12 @@
+<form $$method $$action $$files $$attributes>
+    <div class="fields">
+        <foreach $fields as $field>
+            $$field
+        </foreach>
+    </div>
+    <div class="fieldrow actions">
+    <foreach $actions as $action>
+        $$action
+    </foreach>
+    </div>
+</form>

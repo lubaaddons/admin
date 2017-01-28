@@ -47,7 +47,10 @@ $(function() {
         // $('.modal .html').ckeditor(function() {},{'toolbar':'basic'});
         $('.modal select').selectize();
     }
-
+    $(document).keyup(function(e){
+        if(e.keyCode === 27)
+            hideoverlay();
+    });
 });
 // $(document).ready(function(){
 

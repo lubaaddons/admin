@@ -247,6 +247,7 @@ class AdminBackend extends Controller
 	public function itemform($fields, $bindings = false)
 	{
 		$form = new Form;
+        $form->templates(__DIR__."/views/form/");
 
 		if ($bindings)
 			$form->bind($bindings);

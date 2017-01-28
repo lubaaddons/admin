@@ -3309,7 +3309,7 @@
     color: #FFFFFF; }
   .mainnav .active a, .mainnav a:hover {
     color: #444;
-    background-color: #f0f0f0; }
+    background-color: #e0e0e0; }
   .mainnav .logout {
     display: block;
     float: right;
@@ -3785,8 +3785,8 @@ input[type="submit"], button, .button, .modal .modal_close {
       color: #1176A2; }
 
 .adminfilter {
-  border-top: 1px solid #f0f0f0;
-  border-bottom: 1px solid #f0f0f0; }
+  border-top: 1px solid #e0e0e0;
+  border-bottom: 1px solid #e0e0e0; }
 
 .table-container {
   max-width: 100%;
@@ -3797,7 +3797,7 @@ input[type="submit"], button, .button, .modal .modal_close {
   .table td, .table th {
     text-align: left;
     padding: 8px 16px;
-    border-bottom: 1px solid #f0f0f0; }
+    border-bottom: 1px solid #e0e0e0; }
   .table thead tr th {
     font-weight: 500; }
 
@@ -3811,7 +3811,7 @@ input[type="submit"], button, .button, .modal .modal_close {
   border-radius: 4px; }
 
 .pagination {
-  border-bottom: 1px solid #f0f0f0; }
+  border-bottom: 1px solid #e0e0e0; }
   .pagination ul {
     list-style-type: none;
     padding: 0;
@@ -3825,7 +3825,7 @@ input[type="submit"], button, .button, .modal .modal_close {
         width: 30px;
         height: 30px;
         text-align: center;
-        border-right: 1px solid #f0f0f0;
+        border-right: 1px solid #e0e0e0;
         text-decoration: none;
         padding-top: 7px;
         color: #444; }
@@ -3833,7 +3833,7 @@ input[type="submit"], button, .button, .modal .modal_close {
           background-color: #1176A2;
           color: #FFFFFF; }
         .pagination ul li a:hover {
-          background-color: #f0f0f0; }
+          background-color: #e0e0e0; }
 
 .overlay {
   position: fixed;
@@ -3858,7 +3858,6 @@ input[type="submit"], button, .button, .modal .modal_close {
       top: 0;
       left: 50%;
       max-height: 100%;
-      overflow: auto;
       max-width: 800px;
       transform: translateX(-50%); } }
   .modal .modal_close {
@@ -3866,13 +3865,17 @@ input[type="submit"], button, .button, .modal .modal_close {
     top: 10px;
     right: 0; }
   .modal .modal_content {
-    padding-bottom: 50px;
-    position: static; }
+    height: 100%;
+    position: relative; }
+  .modal .fields {
+    overflow: auto;
+    max-height: 500px;
+    border-top: 1px solid #e0e0e0; }
   .modal .actions {
     height: 50px;
     position: absolute;
+    border-top: 1px solid #e0e0e0;
     background-color: #FFFFFF;
-    border-top: 1px solid #f0f0f0;
     left: 0;
     right: 0;
     bottom: 0; }
@@ -3881,9 +3884,9 @@ main {
   padding: 20px 20px 60px; }
 
 .panel {
-  border: 1px solid #f0f0f0; }
+  border: 1px solid #e0e0e0; }
   .panel .panel_header {
-    background-color: #f0f0f0;
+    background-color: #e0e0e0;
     padding: 6px 12px;
     position: relative; }
     .panel .panel_header .panel_header_actions {

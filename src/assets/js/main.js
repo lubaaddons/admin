@@ -1929,6 +1929,9 @@
 	        // $('.modal .html').ckeditor(function() {},{'toolbar':'basic'});
 	        (0, _jquery2.default)('.modal select').selectize();
 	    }
+	    (0, _jquery2.default)(document).keyup(function (e) {
+	        if (e.keyCode === 27) hideoverlay();
+	    });
 	});
 	// $(document).ready(function(){
 	
