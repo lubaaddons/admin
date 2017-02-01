@@ -146,7 +146,7 @@ class AdminBackend extends Controller
 		$form = $this->itemform();
 		$form->action(url("admin/{$this->table}/store"));
 
-		return new View('edit', ['editfields' => $formfields, 'form' => $form], __DIR__.'/views/');
+		return new View('edit', ['form' => $form], __DIR__.'/views/');
 	}
 
 	/**
