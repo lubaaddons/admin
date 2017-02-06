@@ -3789,7 +3789,8 @@ input[type="submit"], button, .button, .modal .modal_close {
 
 .adminfilter {
   border-top: 1px solid #e0e0e0;
-  border-bottom: 1px solid #e0e0e0; }
+  border-bottom: 1px solid #e0e0e0;
+  padding-bottom: 8px; }
 
 .table-container {
   max-width: 100%;
@@ -3874,6 +3875,7 @@ input[type="submit"], button, .button, .modal .modal_close {
   .modal .fields {
     overflow: auto;
     max-height: 500px;
+    margin-bottom: 50px;
     border-top: 1px solid #e0e0e0; }
   .modal .actions {
     height: 50px;

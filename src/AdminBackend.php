@@ -250,7 +250,7 @@ class AdminBackend extends Controller
 
             if($fieldtype == "file")
             {
-                $form->$field($name, $attributes)->label(ucfirst($name));
+                $form->$fieldtype($name, $attributes)->label(ucfirst($name));
             }
             elseif ($fieldtype == "select")
             {
