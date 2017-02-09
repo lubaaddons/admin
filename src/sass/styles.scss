@@ -10,10 +10,10 @@ $ionicons-font-path: "~ionicons-npm/fonts";
 @import "typography";
 
 @import "~selectize/dist/css/selectize.css";
+@import "~jquery-datetimepicker/jquery.datetimepicker.css";
 @import "forms";
 @import "table";
 @import "modal";
-
 
 main {
     padding:20px 20px 60px;

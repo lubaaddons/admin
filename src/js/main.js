@@ -2,6 +2,8 @@ require("../sass/styles.scss");
 
 import $ from "jquery";
 import Selectize from "./selectize_clear.js";
+import DateTime from "jquery-datetimepicker";
+$.datetimepicker.setLocale('de');
 
 function hideoverlay() {
     $('.overlay').fadeOut(200, function(){
@@ -46,6 +48,12 @@ $(function() {
         $('.modal').hide().fadeIn(200);
         // $('.modal .html').ckeditor(function() {},{'toolbar':'basic'});
         $('.modal select').selectize();
+        console.log($('.modal input[name="datum"]'));
+        $('.modal input.date').datetimepicker({
+             timepicker:false,
+             format:'Y-m-d'
+        });
+
     }
     $(document).keyup(function(e){
         if(e.keyCode === 27)

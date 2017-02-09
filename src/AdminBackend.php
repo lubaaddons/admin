@@ -384,14 +384,27 @@ class AdminBackend extends Controller
 	{
         $data = $this->getInputData();
 
-		SQL::table($this->table)->insert($data);
         $editfields = $this->getEditFields();
+
+        $savedata = [];
 
         foreach ($editfields as $key => $value)
         {
             if(isset($value['setvalues']))
             {
-                $data[$key] = $value['setvalues']($item);
+                $savedata[$key] = $data[$key];
+                unset($data[$key]);
+            }
+        }
+
+        $id = SQL::table($this->table)->insert($data);
+
+        //Save after insert
+        foreach ($editfields as $key => $value)
+        {
+            if(isset($value['setvalues']))
+            {
+                $value['setvalues']($id, $savedata[$key]);
             }
         }
 
