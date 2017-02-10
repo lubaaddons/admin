@@ -18,6 +18,10 @@
         text-align:left;
         padding:8px 16px;
         border-bottom:1px solid $lightgrey;
+
+        &.nowrap {
+            white-space:nowrap;
+        }
     }
     thead {
         tr {

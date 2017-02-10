@@ -63,7 +63,7 @@
                                                         $value = $item->$col;
 
                                                         if(isset($name['formatter']))
-                                                            $value = $name['formatter']($value);
+                                                            $value = $name['formatter']($value, $item);
 
                                                         echo $value;
                                                     </php>

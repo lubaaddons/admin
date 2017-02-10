@@ -617,7 +617,10 @@ class AdminBackend extends Controller
 		if ($returnquery)
 			return $items;
 
-		$items = $items->get();
+        if(isset($tableconf["model"]))
+            $items = $items->toModel($tableconf["model"]);
+        else
+		    $items = $items->get();
 		return $items;
 	}
 
@@ -658,7 +661,11 @@ class AdminBackend extends Controller
 	public function makePagination($perpage, $tableconf, $tablename)
 	{
 		$items = $this->getItems($tableconf, $tablename, NULL, true);
-		$paginator = new Paginator($items, $perpage);
+
+        if(isset($tableconf["model"]))
+		    $paginator = new Paginator($items, $perpage, "page", $tableconf["model"]);
+        else
+            $paginator = new Paginator($items, $perpage);
 
 		return $paginator;
 	}
