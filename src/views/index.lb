@@ -35,7 +35,8 @@
         						<th></th>
         					<tr>
         				</thead>
-        				<body>
+        				<tbody>
+                            <if $items->count()>
         					<foreach $items as $item>
         						<tr>
 
@@ -77,6 +78,11 @@
         							<a href="<< url('admin/'.$tablename.'/delete/'.$item->id) >>"  data-behaviour="ajax" class="row_button"><i class="ion-trash-b"></i> delete</a></td>
         						</tr>
         					</foreach>
+                            <else>
+                            <tr>
+                                <td>Leider wurden keine Einträge gefunden.</td>
+                            </tr>
+                            </if>
         				</tbody>
 
         			</table>
