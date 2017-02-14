@@ -392,7 +392,7 @@ class AdminBackend extends Controller
         {
             if(isset($value['setvalues']))
             {
-                $savedata[$key] = $data[$key];
+                $savedata[$key] = isset($data[$key])?$data[$key]:null;
                 unset($data[$key]);
             }
         }

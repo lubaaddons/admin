@@ -48,7 +48,7 @@ $(function() {
         $('.modal').hide().fadeIn(200);
         // $('.modal .html').ckeditor(function() {},{'toolbar':'basic'});
         $('.modal select').selectize();
-        console.log($('.modal input[name="datum"]'));
+        // console.log($('.modal input[name="datum"]'));
         $('.modal input.date').datetimepicker({
              timepicker:false,
              format:'Y-m-d'
