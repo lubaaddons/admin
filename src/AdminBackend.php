@@ -364,8 +364,12 @@ class AdminBackend extends Controller
         {
             if(isset($value['setvalues']))
             {
-                $value['setvalues']($id, $data[$key]); //Manual save
-                unset($data[$key]);
+                if(isset($data[$key])) {
+                    $value['setvalues']($id, $data[$key]); //Manual save
+                    unset($data[$key]);
+                } else {
+                    $value['setvalues']($id, null); //Manual save
+                }
             }
         }
         SQL::table($this->table)->update($id, $data);
