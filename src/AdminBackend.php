@@ -10,6 +10,7 @@ use Form;
 use Input;
 use URL;
 use Auth;
+use Session;
 use Luba\Helpers\Header;
 use Luba\Framework\Paginator;
 use Luba\Excel;
@@ -146,6 +147,9 @@ class AdminBackend extends Controller
 		$form = $this->itemform();
 		$form->action(url("admin/{$this->table}/store"));
 
+        if(isset($_GET['camefrom']))
+            Session::set('__camefrom', $_GET['camefrom']);
+
 		return new View('edit', ['form' => $form], __DIR__.'/views/');
 	}
 
@@ -161,6 +165,9 @@ class AdminBackend extends Controller
         $data = $this->fillValues($item);
 		$form = $this->itemform($data);
 		$form->action(url("admin/{$this->table}/update/$id"));
+
+        if(isset($_GET['camefrom']))
+            Session::set('__camefrom', $_GET['camefrom']);
 
 		return new View('edit', ['item' => $item, 'form' => $form], __DIR__.'/views/');
 	}
@@ -375,8 +382,12 @@ class AdminBackend extends Controller
         SQL::table($this->table)->update($id, $data);
 
         //Save relations
+        if($camefrom = Session::get('__camefrom')) {
+            Redirect::to(urldecode($camefrom));
+        } else {
+            Redirect::to(url("admin/{$this->table}"));
+        }
 
-        Redirect::to(url("admin/{$this->table}"));
     }
 
     /**
@@ -411,8 +422,11 @@ class AdminBackend extends Controller
                 $value['setvalues']($id, $savedata[$key]);
             }
         }
-
-		Redirect::to(url("admin/{$this->table}"));
+        if($camefrom = Session::get('__camefrom')) {
+            Redirect::to(urldecode($camefrom));
+        } else {
+    		Redirect::to(url("admin/{$this->table}"));
+        }
 	}
 
 	/**
@@ -545,6 +559,8 @@ class AdminBackend extends Controller
 
             $title = isset($table['menuname']) ? $table['menuname'] : ucfirst($name);
 
+            $currenturl = urlencode($_SERVER["REQUEST_URI"]);
+
             // Return view
 			return new View('index', [
 
@@ -558,7 +574,8 @@ class AdminBackend extends Controller
 				'exportlink'	=> $exportlink,
 				'importlink'	=> $importlink,
 				'otherlinks'	=> $otherlinks,
-				'adminfilter'	=> $adminfilter
+				'adminfilter'	=> $adminfilter,
+                'currenturl'    => $currenturl
 
 			], $this->config->templateDir());
 		}

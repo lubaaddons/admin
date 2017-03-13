@@ -74,7 +74,7 @@
             									<td><< $item->$col >></td>
             								</if>
         							</foreach>
-        							<td class="nowrap"><a href="<< url('admin/'.$tablename.'/edit/'.$item->id) >>"  data-behaviour="ajax" class="row_button"><i class="ion-android-create"></i> edit</a>
+        							<td class="nowrap"><a href="<< url('admin/'.$tablename.'/edit/'.$item->id) >>?camefrom=$$currenturl"  data-behaviour="ajax" class="row_button"><i class="ion-android-create"></i> edit</a>
         							<a href="<< url('admin/'.$tablename.'/delete/'.$item->id) >>"  data-behaviour="ajax" class="row_button"><i class="ion-trash-b"></i> delete</a></td>
         						</tr>
         					</foreach>
