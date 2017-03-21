@@ -247,6 +247,9 @@ class AdminBackend extends Controller
 
         foreach ($editfields as $name => $formdef)
 		{
+            if(is_int($name)) {
+                $name = $formdef;
+            }
             $fieldtype = $this->getFieldType($name, $formdef);
             $attributes = [];
             $config = is_array($formdef)?$formdef:NULL;
