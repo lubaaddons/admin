@@ -47,7 +47,7 @@ class AdminCustomLink
 		$ajax = $this->ajax ? 'data-behaviour="ajax"' : '';
         $target = $this->target ? 'target="'.$this->target.'"' : '';
 
-		return "<a href=\"{$this->url}\" $ajax $target $linkattr>{$this->name}</a>";
+		return "<a class=\"button\" href=\"{$this->url}\" $ajax $target $linkattr>{$this->name}</a>";
 	}
 
 	public function __tostring()
