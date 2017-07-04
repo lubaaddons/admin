@@ -20,7 +20,7 @@ form {
             border:1px solid $lightgrey;
         }
         textarea {
-            height:80px;
+            min-height:80px;
         }
         input[type="submit"], input[type="checkbox"], input[type="radio"], button {
             width:auto;
