@@ -66,10 +66,12 @@ class AdminBackend extends Controller
         }
         catch (PermissionDeniedException $e)
         {
-            if($loginlink = $this->config->loginlink())
+            if($loginlink = $this->config->loginlink()) {
                 Redirect::to($loginlink);
-            else
+                exit;
+            } else {
                 throw $e;
+            }
         }
 		if (!is_dir(public_path('tempimages')))
 			mkdir(public_path('tempimages'));

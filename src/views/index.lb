@@ -91,7 +91,7 @@
     			$$pagination
 
                 <if $exportlink>
-                <p><a href="$$exportlink" target="_blank">Export</a></p>
+                <p><a class="button" href="$$exportlink" target="_blank">Export</a></p>
                 </if>
 
                 <if $importlink>
